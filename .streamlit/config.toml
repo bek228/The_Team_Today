@@ -1,0 +1,15 @@
+# Theme for the dashboard (dashboard/app.py): light page, navy sidebar.
+[theme]
+base = "light"
+primaryColor = "#0f8b6f"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f3f5f9"
+textColor = "#1b2437"
+headingFont = "serif"
+
+[theme.sidebar]
+backgroundColor = "#14213d"
+secondaryBackgroundColor = "#22325a"
+textColor = "#e8ecf4"
+primaryColor = "#5fd3b5"
+borderColor = "#2c3d66"

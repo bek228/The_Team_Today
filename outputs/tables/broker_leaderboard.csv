@@ -1,0 +1,514 @@
+sample,broker,direction,n,mean_pct,se_pct,t_stat,ci_lo_pct,ci_hi_pct,shrunk_mean_pct,rank,meets_min_n,share_near_earnings_pct
+all,JP Morgan,upgrade,27,5.3562,1.0744,4.9855,3.2505,7.4619,3.5728,1,True,18.5185
+all,Deutsche Bank,upgrade,19,4.8685,1.548,3.145,1.8344,7.9025,3.2888,2,True,5.2632
+all,B of A Securities,upgrade,37,4.0045,1.1269,3.5534,1.7957,6.2132,3.2538,3,True,21.6216
+all,Barclays,upgrade,21,4.5667,1.0232,4.4633,2.5613,6.5721,3.2514,4,True,38.0952
+all,DZ Bank,upgrade,18,4.6752,1.3357,3.5001,2.0572,7.2933,3.227,5,True,61.1111
+all,Truist Securities,upgrade,16,4.6899,1.4181,3.3071,1.9104,7.4695,3.1937,6,True,25.0
+all,Evercore ISI,upgrade,12,4.9795,1.8121,2.7478,1.4277,8.5313,3.1606,7,True,8.3333
+all,Goldman Sachs,upgrade,15,4.4393,1.5824,2.8055,1.3378,7.5407,3.1271,8,True,26.6667
+all,Baird,upgrade,13,4.6246,2.4852,1.8609,-0.2463,9.4956,3.1243,9,True,23.0769
+all,KeyBanc,upgrade,14,4.4997,1.2763,3.5257,1.9982,7.0012,3.1211,10,True,14.2857
+all,Seaport Global,upgrade,16,4.3199,2.037,2.1207,0.3273,8.3125,3.1196,11,True,31.25
+all,Piper Sandler,upgrade,20,3.7956,1.7319,2.1916,0.4011,7.1901,3.0518,12,True,15.0
+all,TD Cowen,upgrade,14,3.8352,1.7059,2.2482,0.4917,7.1787,3.0016,13,True,14.2857
+all,Bernstein,upgrade,15,3.5342,1.159,3.0493,1.2625,5.8059,2.955,14,True,20.0
+all,UBS,upgrade,24,3.1374,0.7911,3.9656,1.5867,4.688,2.9059,15,True,16.6667
+all,Raymond James,upgrade,17,2.8354,0.6997,4.0525,1.464,4.2068,2.8224,16,True,17.6471
+all,Citigroup,upgrade,27,2.8133,1.3614,2.0665,0.145,5.4816,2.8173,17,True,11.1111
+all,Wells Fargo,upgrade,24,2.7441,0.9018,3.0428,0.9765,4.5117,2.7985,18,True,16.6667
+all,Mizuho,upgrade,10,2.552,1.233,2.0698,0.1354,4.9686,2.7828,19,True,0.0
+all,Morgan Stanley,upgrade,35,2.7074,0.8643,3.1326,1.0135,4.4013,2.7795,20,True,5.7143
+all,Guggenheim,upgrade,11,2.3246,1.1216,2.0727,0.1263,4.5229,2.7463,21,True,9.0909
+all,Argus Research,upgrade,26,2.5529,1.2092,2.1112,0.1828,4.9229,2.742,22,True,38.4615
+all,RBC Capital,upgrade,14,2.2881,1.0527,2.1735,0.2248,4.3514,2.7235,23,True,7.1429
+all,Loop Capital,upgrade,10,1.4895,0.8509,1.7505,-0.1783,3.1573,2.639,24,True,0.0
+all,Oppenheimer,upgrade,13,1.5559,0.9877,1.5752,-0.38,3.4919,2.6054,25,True,7.6923
+all,HSBC,upgrade,31,2.1536,1.0661,2.02,0.064,4.2432,2.6016,26,True,29.0323
+all,Jefferies,upgrade,30,1.9645,1.4155,1.3878,-0.8099,4.739,2.5459,27,True,6.6667
+all,BMO Capital,upgrade,11,0.9454,1.4219,0.6649,-1.8416,3.7324,2.5437,28,True,36.3636
+all,Daiwa Capital,upgrade,15,1.2815,0.7336,1.7469,-0.1564,2.7194,2.5266,29,True,6.6667
+all,Erste Group,upgrade,10,0.382,0.563,0.6784,-0.7215,1.4854,2.4891,30,True,0.0
+all,BNP Paribas,upgrade,18,1.2869,0.8183,1.5727,-0.3169,2.8907,2.4821,31,True,16.6667
+all,Wolfe Research,upgrade,30,1.6794,0.6332,2.6523,0.4383,2.9204,2.4548,32,True,6.6667
+all,Redburn Atlantic,upgrade,14,0.1493,0.6433,0.232,-1.1116,1.4101,2.339,33,True,0.0
+all,Freedom Capital Markets,upgrade,11,-1.3498,1.7952,-0.7519,-4.8683,2.1687,2.2066,34,True,36.3636
+all,Berenberg,upgrade,9,0.8201,1.5145,0.5415,-2.1484,3.7886,2.5721,,False,22.2222
+all,Credit Suisse,upgrade,9,-0.0797,1.4381,-0.0554,-2.8985,2.739,2.461,,False,22.2222
+all,DA Davidson,upgrade,9,2.7958,1.2679,2.205,0.3107,5.281,2.8161,,False,11.1111
+all,New Street Research,upgrade,9,3.4185,1.4883,2.2969,0.5014,6.3357,2.893,,False,22.2222
+all,Susquehanna,upgrade,9,3.1975,1.281,2.4961,0.6868,5.7082,2.8657,,False,22.2222
+all,Wedbush,upgrade,9,4.0201,2.5419,1.5815,-0.9621,9.0022,2.9673,,False,22.2222
+all,Atlantic Equities,upgrade,8,2.8003,1.5852,1.7665,-0.3067,5.9073,2.8169,,False,12.5
+all,Scotiabank,upgrade,8,3.2646,2.4298,1.3436,-1.4977,8.027,2.8686,,False,25.0
+all,Stifel,upgrade,8,3.0197,3.1498,0.9587,-3.1539,9.1932,2.8413,,False,50.0
+all,Needham,upgrade,7,-1.5925,6.228,-0.2557,-13.7994,10.6144,2.3833,,False,57.1429
+all,Northland Capital Markets,upgrade,7,1.46,3.3052,0.4417,-5.0181,7.9381,2.6847,,False,14.2857
+all,Odeon Capital,upgrade,7,1.0635,1.7843,0.596,-2.4338,4.5607,2.6456,,False,14.2857
+all,Rosenblatt,upgrade,7,6.7789,3.6048,1.8805,-0.2864,13.8443,3.21,,False,57.1429
+all,Gordon Haskett,upgrade,6,2.3265,0.3331,6.9837,1.6736,2.9795,2.7767,,False,0.0
+all,KGI Securities,upgrade,6,5.659,4.2839,1.321,-2.7373,14.0554,3.0628,,False,33.3333
+all,Melius Research,upgrade,6,4.4051,1.3036,3.3792,1.85,6.9601,2.9551,,False,0.0
+all,CFRA,upgrade,5,-0.2321,2.7177,-0.0854,-5.5589,5.0946,2.5975,,False,0.0
+all,Leerink Partners,upgrade,5,3.9562,1.4652,2.7002,1.0845,6.828,2.9015,,False,20.0
+all,Macquarie,upgrade,5,6.4427,2.5212,2.5554,1.5012,11.3843,3.082,,False,60.0
+all,MoffettNathanson,upgrade,5,3.0827,0.995,3.0982,1.1325,5.0328,2.8381,,False,0.0
+all,Northcoast Research,upgrade,5,1.4044,0.9293,1.5112,-0.4171,3.2259,2.7163,,False,20.0
+all,BTIG,upgrade,4,0.7407,0.3503,2.1148,0.0542,1.4272,2.6965,,False,0.0
+all,Benchmark,upgrade,3,6.1106,4.3443,1.4066,-2.4043,14.6255,2.9666,,False,33.3333
+all,Canaccord Genuity,upgrade,3,5.8367,3.848,1.5168,-1.7055,13.3788,2.9543,,False,33.3333
+all,Craig-Hallum,upgrade,3,9.2466,6.8377,1.3523,-4.1552,22.6484,3.1073,,False,100.0
+all,Edward Jones,upgrade,3,-4.0714,4.3064,-0.9454,-12.512,4.3692,2.5099,,False,33.3333
+all,"Keefe, Bruyette & Woods",upgrade,3,0.0142,0.5874,0.0242,-1.1371,1.1655,2.6931,,False,0.0
+all,OTR Global,upgrade,3,-0.7761,0.3909,-1.9855,-1.5422,-0.01,2.6577,,False,0.0
+all,Summit Insights Group,upgrade,3,1.196,3.7101,0.3224,-6.0757,8.4678,2.7462,,False,100.0
+all,Tigress Financial,upgrade,3,-2.7673,3.525,-0.785,-9.6763,4.1417,2.5684,,False,0.0
+all,Cantor Fitzgerald,upgrade,2,1.5702,2.0405,0.7695,-2.4292,5.5696,2.781,,False,0.0
+all,China Renaissance,upgrade,2,1.3453,3.8417,0.3502,-6.1844,8.875,2.7742,,False,50.0
+all,Itau BBA,upgrade,2,3.9362,0.2949,13.3488,3.3583,4.5142,2.8529,,False,50.0
+all,MKM Partners,upgrade,2,1.7628,0.5288,3.3337,0.7264,2.7993,2.7869,,False,0.0
+all,Maxim Group,upgrade,2,2.6179,2.6032,1.0057,-2.4843,7.7202,2.8128,,False,50.0
+all,Phillip Securities,upgrade,2,0.5732,3.4869,0.1644,-6.2611,7.4075,2.7508,,False,50.0
+all,Roth MKM,upgrade,2,1.7217,2.7012,0.6374,-3.5726,7.016,2.7856,,False,0.0
+all,Rothschild & Co,upgrade,2,1.5964,2.4549,0.6503,-3.2153,6.4081,2.7818,,False,0.0
+all,Societe Generale,upgrade,2,1.3018,0.7661,1.6994,-0.1996,2.8033,2.7729,,False,0.0
+all,William Blair,upgrade,2,-0.5955,0.268,-2.2221,-1.1207,-0.0702,2.7153,,False,0.0
+all,BWG Global,upgrade,1,3.2394,,,,,2.8254,,False,0.0
+all,CICC,upgrade,1,-5.5745,,,,,2.6896,,False,100.0
+all,Citizens,upgrade,1,1.661,,,,,2.8011,,False,0.0
+all,Compass Point,upgrade,1,-4.5865,,,,,2.7048,,False,0.0
+all,Huber Research,upgrade,1,11.0068,,,,,2.9451,,False,100.0
+all,Independent Research,upgrade,1,0.7156,,,,,2.7865,,False,100.0
+all,Kalinowski Research,upgrade,1,1.1604,,,,,2.7934,,False,0.0
+all,R5 Capital,upgrade,1,1.3837,,,,,2.7968,,False,100.0
+all,SMBC Nikko,upgrade,1,9.4832,,,,,2.9217,,False,100.0
+all,Stephens & Co.,upgrade,1,-2.0712,,,,,2.7436,,False,100.0
+all,TD Securities,upgrade,1,1.5089,,,,,2.7988,,False,0.0
+all,Telsey Advisory Group,upgrade,1,3.72,,,,,2.8328,,False,0.0
+all,Tudor Pickering,upgrade,1,-4.1084,,,,,2.7122,,False,0.0
+all,Vertical Group,upgrade,1,0.5954,,,,,2.7847,,False,100.0
+all,Vertical Research,upgrade,1,-1.0486,,,,,2.7593,,False,0.0
+all,WestPark Capital,upgrade,1,-1.2659,,,,,2.756,,False,100.0
+all,Zelman & Assoc,upgrade,1,-1.0705,,,,,2.759,,False,0.0
+all,B of A Securities,downgrade,27,-6.5168,2.0,-3.2584,-10.4368,-2.5969,-3.6571,1,True,29.6296
+all,DZ Bank,downgrade,20,-7.093,2.3362,-3.0362,-11.6719,-2.5141,-3.6491,2,True,55.0
+all,JP Morgan,downgrade,16,-6.7248,2.5682,-2.6185,-11.7584,-1.6912,-3.6304,3,True,31.25
+all,Raymond James,downgrade,19,-5.7452,2.2545,-2.5483,-10.1641,-1.3263,-3.6215,4,True,26.3158
+all,Oppenheimer,downgrade,17,-5.6672,2.1384,-2.6502,-9.8585,-1.476,-3.6163,5,True,11.7647
+all,Morgan Stanley,downgrade,32,-4.2711,1.2082,-3.535,-6.6392,-1.9029,-3.6032,6,True,15.625
+all,BMO Capital,downgrade,10,-5.1447,2.363,-2.1771,-9.7763,-0.5131,-3.5975,7,True,40.0
+all,UBS,downgrade,17,-4.4196,2.1346,-2.0705,-8.6035,-0.2358,-3.5961,8,True,17.6471
+all,Seaport Global,downgrade,11,-4.4486,1.6746,-2.6566,-7.7308,-1.1665,-3.5917,9,True,27.2727
+all,Truist Securities,downgrade,10,-4.3498,2.3187,-1.876,-8.8944,0.1948,-3.59,10,True,40.0
+all,Atlantic Equities,downgrade,12,-4.1339,2.9356,-1.4082,-9.8876,1.6198,-3.5889,11,True,16.6667
+all,Baird,downgrade,18,-3.8734,1.8388,-2.1065,-7.4775,-0.2693,-3.5876,12,True,22.2222
+all,Piper Sandler,downgrade,12,-3.8804,2.9053,-1.3356,-9.5748,1.814,-3.586,13,True,41.6667
+all,Barclays,downgrade,18,-3.6078,1.8971,-1.9018,-7.3261,0.1105,-3.5831,14,True,33.3333
+all,Jefferies,downgrade,20,-3.4918,1.5233,-2.2922,-6.4776,-0.5061,-3.5809,15,True,15.0
+all,KeyBanc,downgrade,19,-3.2361,1.9974,-1.6202,-7.151,0.6787,-3.5764,16,True,31.5789
+all,Goldman Sachs,downgrade,16,-3.1215,1.1206,-2.7856,-5.3178,-0.9252,-3.5756,17,True,25.0
+all,Citigroup,downgrade,18,-2.8409,1.4021,-2.0261,-5.5891,-0.0927,-3.57,18,True,16.6667
+all,Wells Fargo,downgrade,15,-2.3076,0.8733,-2.6423,-4.0193,-0.5958,-3.5644,19,True,6.6667
+all,Argus Research,downgrade,22,-2.561,1.9654,-1.3031,-6.4131,1.2911,-3.5614,20,True,22.7273
+all,Wolfe Research,downgrade,22,-2.2414,1.3061,-1.7161,-4.8014,0.3186,-3.5548,21,True,18.1818
+all,Daiwa Capital,downgrade,11,-0.7677,0.6974,-1.1009,-2.1346,0.5991,-3.5531,22,True,0.0
+all,Mizuho,downgrade,14,-0.9017,1.1388,-0.7918,-3.1338,1.3304,-3.5469,23,True,14.2857
+all,Deutsche Bank,downgrade,15,-1.0099,1.5332,-0.6587,-4.0149,1.9952,-3.5459,24,True,33.3333
+all,Bernstein,downgrade,12,-0.252,0.9613,-0.2622,-2.1361,1.6321,-3.5445,25,True,0.0
+all,BNP Paribas,downgrade,16,-0.7599,0.5987,-1.2693,-1.9333,0.4135,-3.5397,26,True,0.0
+all,Redburn Atlantic,downgrade,16,-0.3758,0.4,-0.9395,-1.1597,0.4082,-3.5339,27,True,6.25
+all,HSBC,downgrade,21,-0.7008,1.4067,-0.4982,-3.458,2.0563,-3.5254,28,True,33.3333
+all,Evercore ISI,downgrade,9,-6.167,2.9001,-2.1264,-11.8513,-0.4827,-3.6049,,False,33.3333
+all,KGI Securities,downgrade,9,-6.876,4.1042,-1.6754,-14.9202,1.1682,-3.611,,False,44.4444
+all,RBC Capital,downgrade,9,-0.8818,1.7805,-0.4952,-4.3714,2.6079,-3.5594,,False,11.1111
+all,CFRA,downgrade,8,0.1694,1.8059,0.0938,-3.3701,3.709,-3.5539,,False,37.5
+all,Loop Capital,downgrade,8,-7.6702,4.845,-1.5831,-17.1664,1.826,-3.6139,,False,25.0
+all,Scotiabank,downgrade,8,-2.8257,0.9862,-2.8651,-4.7587,-0.8927,-3.5768,,False,37.5
+all,Edward Jones,downgrade,7,-14.5938,4.9254,-2.963,-24.2475,-4.94,-3.6565,,False,85.7143
+all,Guggenheim,downgrade,7,-0.2058,1.2133,-0.1696,-2.5839,2.1723,-3.56,,False,0.0
+all,TD Cowen,downgrade,7,-3.2509,4.5752,-0.7106,-12.2182,5.7164,-3.5804,,False,14.2857
+all,Erste Group,downgrade,6,-0.488,0.4853,-1.0054,-1.4392,0.4633,-3.5648,,False,0.0
+all,Odeon Capital,downgrade,6,-1.3667,1.5353,-0.8902,-4.3758,1.6425,-3.5699,,False,33.3333
+all,Stifel,downgrade,6,-9.7756,5.4027,-1.8094,-20.3648,0.8136,-3.6183,,False,50.0
+all,Summit Insights Group,downgrade,6,0.2118,4.4226,0.0479,-8.4564,8.88,-3.5608,,False,83.3333
+all,DA Davidson,downgrade,5,-4.0036,2.0318,-1.9704,-7.9859,-0.0212,-3.5846,,False,20.0
+all,Macquarie,downgrade,5,-9.0643,4.4401,-2.0415,-17.7668,-0.3617,-3.6089,,False,60.0
+all,Melius Research,downgrade,5,-2.1597,1.5029,-1.4371,-5.1053,0.7859,-3.5758,,False,0.0
+all,MoffettNathanson,downgrade,5,-1.2294,0.4383,-2.8047,-2.0885,-0.3703,-3.5713,,False,0.0
+all,New Street Research,downgrade,5,-1.3833,1.4687,-0.9419,-4.2619,1.4953,-3.5721,,False,20.0
+all,Northcoast Research,downgrade,5,-0.4771,0.9556,-0.4992,-2.3501,1.3959,-3.5677,,False,0.0
+all,Berenberg,downgrade,4,0.7675,2.3917,0.3209,-3.9203,5.4553,-3.5659,,False,0.0
+all,China Renaissance,downgrade,4,-9.2356,6.5607,-1.4077,-22.0946,3.6233,-3.6043,,False,75.0
+all,Citizens,downgrade,4,-10.2241,4.2233,-2.4209,-18.5018,-1.9464,-3.6081,,False,50.0
+all,Credit Suisse,downgrade,4,-10.0259,5.7924,-1.7309,-21.3791,1.3273,-3.6074,,False,50.0
+all,Freedom Capital Markets,downgrade,4,-1.5199,0.815,-1.865,-3.1172,0.0774,-3.5747,,False,25.0
+all,Northland Capital Markets,downgrade,4,2.2086,1.4467,1.5266,-0.6271,5.0442,-3.5604,,False,0.0
+all,Phillip Securities,downgrade,4,-3.0837,2.7357,-1.1272,-8.4457,2.2784,-3.5807,,False,50.0
+all,Rosenblatt,downgrade,4,-5.6808,1.7373,-3.2699,-9.0859,-2.2756,-3.5907,,False,50.0
+all,Societe Generale,downgrade,4,-0.8057,1.704,-0.4728,-4.1455,2.5342,-3.572,,False,25.0
+all,Susquehanna,downgrade,4,-3.3548,2.5703,-1.3052,-8.3926,1.6829,-3.5817,,False,50.0
+all,William Blair,downgrade,4,-3.2267,2.6162,-1.2334,-8.3544,1.901,-3.5813,,False,25.0
+all,BTIG,downgrade,3,-8.7315,9.1999,-0.9491,-26.7632,9.3002,-3.5975,,False,66.6667
+all,Gordon Haskett,downgrade,3,-0.5315,0.4215,-1.2611,-1.3576,0.2946,-3.5738,,False,0.0
+all,Leerink Partners,downgrade,3,-3.6699,0.4899,-7.4913,-4.6301,-2.7097,-3.5829,,False,0.0
+all,"Monness, Crespi, Hardt",downgrade,3,-12.9494,5.2724,-2.4561,-23.2833,-2.6155,-3.6096,,False,66.6667
+all,Needham,downgrade,3,-4.6934,3.9255,-1.1956,-12.3875,3.0006,-3.5858,,False,33.3333
+all,Rothschild & Co,downgrade,3,-4.9792,1.6059,-3.1006,-8.1268,-1.8317,-3.5867,,False,0.0
+all,Wedbush,downgrade,3,-3.2975,2.3193,-1.4218,-7.8433,1.2484,-3.5818,,False,33.3333
+all,Canaccord Genuity,downgrade,2,-15.4507,5.4332,-2.8438,-26.0998,-4.8017,-3.6055,,False,100.0
+all,Craig-Hallum,downgrade,2,1.3749,11.4977,0.1196,-21.1607,23.9104,-3.5731,,False,50.0
+all,"Keefe, Bruyette & Woods",downgrade,2,0.0686,1.3355,0.0514,-2.549,2.6862,-3.5756,,False,0.0
+all,LightShed Partners,downgrade,2,-0.0067,3.0074,-0.0022,-5.9012,5.8878,-3.5757,,False,0.0
+all,OTR Global,downgrade,2,-0.6522,0.6538,-0.9975,-1.9336,0.6293,-3.577,,False,0.0
+all,Pivotal Research,downgrade,2,-20.7024,14.3224,-1.4455,-48.7743,7.3694,-3.6156,,False,50.0
+all,R5 Capital,downgrade,2,3.0257,1.4148,2.1385,0.2526,5.7988,-3.5699,,False,50.0
+all,TD Securities,downgrade,2,6.4134,9.8329,0.6522,-12.859,25.6858,-3.5634,,False,0.0
+all,Arete Research,downgrade,1,5.6813,,,,,-3.5737,,False,0.0
+all,BWG Global,downgrade,1,-2.3276,,,,,-3.5814,,False,0.0
+all,Benchmark,downgrade,1,3.7927,,,,,-3.5755,,False,0.0
+all,Cantor Fitzgerald,downgrade,1,1.034,,,,,-3.5782,,False,0.0
+all,Cleveland Research,downgrade,1,1.382,,,,,-3.5778,,False,0.0
+all,Compass Point,downgrade,1,-0.1389,,,,,-3.5793,,False,0.0
+all,Fox Advisors,downgrade,1,1.4191,,,,,-3.5778,,False,100.0
+all,Maxim Group,downgrade,1,5.618,,,,,-3.5738,,False,100.0
+all,Roth MKM,downgrade,1,-1.8024,,,,,-3.5809,,False,100.0
+all,SMBC Nikko,downgrade,1,1.3795,,,,,-3.5778,,False,0.0
+all,Telsey Advisory Group,downgrade,1,0.8392,,,,,-3.5784,,False,0.0
+all,Tudor Pickering,downgrade,1,-9.3146,,,,,-3.5881,,False,100.0
+all,Vertical Research,downgrade,1,0.6911,,,,,-3.5785,,False,0.0
+no_earnings,JP Morgan,upgrade,22,4.1971,1.0878,3.8582,2.0649,6.3292,2.5363,1,True,0.0
+no_earnings,Deutsche Bank,upgrade,18,4.5122,1.5926,2.8333,1.3908,7.6337,2.5278,2,True,0.0
+no_earnings,Evercore ISI,upgrade,11,5.0816,1.9819,2.5639,1.197,8.9662,2.4564,3,True,0.0
+no_earnings,Seaport Global,upgrade,11,4.9563,2.5455,1.9471,-0.0329,9.9454,2.4435,4,True,0.0
+no_earnings,Baird,upgrade,10,4.0511,2.4405,1.6599,-0.7324,8.8345,2.3343,5,True,0.0
+no_earnings,TD Cowen,upgrade,12,3.7501,1.9876,1.8868,-0.1456,7.6458,2.3326,6,True,0.0
+no_earnings,B of A Securities,upgrade,29,2.785,1.0279,2.7095,0.7704,4.7996,2.3015,7,True,0.0
+no_earnings,KeyBanc,upgrade,12,3.3893,0.8553,3.9627,1.7129,5.0656,2.2925,8,True,0.0
+no_earnings,Barclays,upgrade,13,3.277,1.0542,3.1085,1.2107,5.3433,2.2892,9,True,0.0
+no_earnings,Piper Sandler,upgrade,17,2.9528,1.4539,2.031,0.1032,5.8024,2.2753,10,True,0.0
+no_earnings,Raymond James,upgrade,14,3.0957,0.7551,4.0996,1.6156,4.5757,2.2751,11,True,0.0
+no_earnings,UBS,upgrade,20,2.7862,0.7037,3.9592,1.4069,4.1655,2.2641,12,True,0.0
+no_earnings,RBC Capital,upgrade,13,2.6341,1.0739,2.4529,0.5293,4.7389,2.2124,13,True,0.0
+no_earnings,Morgan Stanley,upgrade,33,2.3094,0.7794,2.9629,0.7817,3.8371,2.1947,14,True,0.0
+no_earnings,Mizuho,upgrade,10,2.552,1.233,2.0698,0.1354,4.9686,2.1927,15,True,0.0
+no_earnings,Truist Securities,upgrade,12,2.2454,1.0403,2.1583,0.2063,4.2844,2.1653,16,True,0.0
+no_earnings,Citigroup,upgrade,24,2.1635,1.064,2.0333,0.078,4.249,2.1569,17,True,0.0
+no_earnings,Goldman Sachs,upgrade,11,2.0029,0.5306,3.7751,0.963,3.0428,2.1395,18,True,0.0
+no_earnings,Bernstein,upgrade,12,1.871,0.6808,2.7483,0.5367,3.2054,2.1236,19,True,0.0
+no_earnings,Guggenheim,upgrade,10,1.6808,1.0153,1.6555,-0.3092,3.6708,2.1104,20,True,0.0
+no_earnings,Loop Capital,upgrade,10,1.4895,0.8509,1.7505,-0.1783,3.1573,2.0923,21,True,0.0
+no_earnings,Wells Fargo,upgrade,20,1.7895,0.8093,2.2111,0.2032,3.3758,2.0921,22,True,0.0
+no_earnings,Oppenheimer,upgrade,12,1.3346,1.0465,1.2753,-0.7165,3.3858,2.0639,23,True,0.0
+no_earnings,Jefferies,upgrade,28,1.7411,1.4916,1.1672,-1.1825,4.6646,2.0616,24,True,0.0
+no_earnings,HSBC,upgrade,22,1.6345,0.9396,1.7395,-0.2072,3.4761,2.058,25,True,0.0
+no_earnings,Daiwa Capital,upgrade,14,0.9102,0.6797,1.3393,-0.4219,2.2424,1.9966,26,True,0.0
+no_earnings,Erste Group,upgrade,10,0.382,0.563,0.6784,-0.7215,1.4854,1.9877,27,True,0.0
+no_earnings,BNP Paribas,upgrade,15,0.9141,0.7097,1.2879,-0.477,2.3051,1.9873,28,True,0.0
+no_earnings,Wolfe Research,upgrade,28,1.1309,0.538,2.1021,0.0765,2.1854,1.9237,29,True,0.0
+no_earnings,Redburn Atlantic,upgrade,14,0.1493,0.6433,0.232,-1.1116,1.4101,1.8996,30,True,0.0
+no_earnings,Argus Research,upgrade,16,0.2105,0.8376,0.2513,-1.4312,1.8522,1.8771,31,True,0.0
+no_earnings,DA Davidson,upgrade,8,2.621,1.424,1.8406,-0.17,5.412,2.1911,,False,0.0
+no_earnings,Atlantic Equities,upgrade,7,2.4319,1.7803,1.366,-1.0575,5.9214,2.1741,,False,0.0
+no_earnings,BMO Capital,upgrade,7,1.493,1.6874,0.8848,-1.8144,4.8004,2.1102,,False,0.0
+no_earnings,Berenberg,upgrade,7,-0.5355,1.4859,-0.3604,-3.4478,2.3768,1.9721,,False,0.0
+no_earnings,Credit Suisse,upgrade,7,0.4663,1.3772,0.3385,-2.2331,3.1656,2.0403,,False,0.0
+no_earnings,DZ Bank,upgrade,7,3.535,1.2803,2.761,1.0256,6.0444,2.2491,,False,0.0
+no_earnings,Freedom Capital Markets,upgrade,7,-1.92,0.3429,-5.5999,-2.592,-1.248,1.8779,,False,0.0
+no_earnings,New Street Research,upgrade,7,2.6156,1.7655,1.4815,-0.8447,6.0759,2.1866,,False,0.0
+no_earnings,Susquehanna,upgrade,7,2.5512,0.9317,2.7383,0.7251,4.3772,2.1822,,False,0.0
+no_earnings,Wedbush,upgrade,7,1.7156,1.2322,1.3922,-0.6996,4.1307,2.1253,,False,0.0
+no_earnings,Gordon Haskett,upgrade,6,2.3265,0.3331,6.9837,1.6736,2.9795,2.1653,,False,0.0
+no_earnings,Melius Research,upgrade,6,4.4051,1.3036,3.3792,1.85,6.9601,2.2877,,False,0.0
+no_earnings,Northland Capital Markets,upgrade,6,2.3527,3.7654,0.6248,-5.0275,9.7329,2.1669,,False,0.0
+no_earnings,Odeon Capital,upgrade,6,0.8037,2.0887,0.3848,-3.2902,4.8975,2.0756,,False,0.0
+no_earnings,Scotiabank,upgrade,6,3.0664,3.2719,0.9372,-3.3465,9.4793,2.2089,,False,0.0
+no_earnings,CFRA,upgrade,5,-0.2321,2.7177,-0.0854,-5.5589,5.0946,2.0369,,False,0.0
+no_earnings,MoffettNathanson,upgrade,5,3.0827,0.995,3.0982,1.1325,5.0328,2.2012,,False,0.0
+no_earnings,BTIG,upgrade,4,0.7407,0.3503,2.1148,0.0542,1.4272,2.0986,,False,0.0
+no_earnings,KGI Securities,upgrade,4,0.7725,2.3013,0.3357,-3.738,5.283,2.0998,,False,0.0
+no_earnings,Leerink Partners,upgrade,4,3.527,1.8085,1.9502,-0.0177,7.0717,2.2102,,False,0.0
+no_earnings,Northcoast Research,upgrade,4,0.8701,0.9816,0.8864,-1.0539,2.7941,2.1038,,False,0.0
+no_earnings,Stifel,upgrade,4,6.1829,4.9781,1.242,-3.5741,15.9399,2.3165,,False,0.0
+no_earnings,"Keefe, Bruyette & Woods",upgrade,3,0.0142,0.5874,0.0242,-1.1371,1.1655,2.0903,,False,0.0
+no_earnings,Needham,upgrade,3,4.8466,3.1178,1.5545,-1.2643,10.9575,2.2369,,False,0.0
+no_earnings,OTR Global,upgrade,3,-0.7761,0.3909,-1.9855,-1.5422,-0.01,2.0663,,False,0.0
+no_earnings,Rosenblatt,upgrade,3,-0.3654,3.5431,-0.1031,-7.3099,6.5792,2.0787,,False,0.0
+no_earnings,Tigress Financial,upgrade,3,-2.7673,3.525,-0.785,-9.6763,4.1417,2.0059,,False,0.0
+no_earnings,Benchmark,upgrade,2,8.533,6.2462,1.3661,-3.7095,20.7755,2.2855,,False,0.0
+no_earnings,Canaccord Genuity,upgrade,2,3.0447,4.5866,0.6638,-5.9451,12.0345,2.1734,,False,0.0
+no_earnings,Cantor Fitzgerald,upgrade,2,1.5702,2.0405,0.7695,-2.4292,5.5696,2.1433,,False,0.0
+no_earnings,Edward Jones,upgrade,2,-0.1437,3.0587,-0.047,-6.1387,5.8514,2.1082,,False,0.0
+no_earnings,MKM Partners,upgrade,2,1.7628,0.5288,3.3337,0.7264,2.7993,2.1472,,False,0.0
+no_earnings,Macquarie,upgrade,2,2.5943,4.2969,0.6038,-5.8276,11.0163,2.1642,,False,0.0
+no_earnings,Roth MKM,upgrade,2,1.7217,2.7012,0.6374,-3.5726,7.016,2.1464,,False,0.0
+no_earnings,Rothschild & Co,upgrade,2,1.5964,2.4549,0.6503,-3.2153,6.4081,2.1438,,False,0.0
+no_earnings,Societe Generale,upgrade,2,1.3018,0.7661,1.6994,-0.1996,2.8033,2.1378,,False,0.0
+no_earnings,William Blair,upgrade,2,-0.5955,0.268,-2.2221,-1.1207,-0.0702,2.099,,False,0.0
+no_earnings,BWG Global,upgrade,1,3.2394,,,,,2.1664,,False,0.0
+no_earnings,China Renaissance,upgrade,1,-2.4964,,,,,2.1072,,False,0.0
+no_earnings,Citizens,upgrade,1,1.661,,,,,2.1501,,False,0.0
+no_earnings,Compass Point,upgrade,1,-4.5865,,,,,2.0856,,False,0.0
+no_earnings,Itau BBA,upgrade,1,3.6413,,,,,2.1706,,False,0.0
+no_earnings,Kalinowski Research,upgrade,1,1.1604,,,,,2.145,,False,0.0
+no_earnings,Maxim Group,upgrade,1,0.0148,,,,,2.1331,,False,0.0
+no_earnings,Phillip Securities,upgrade,1,-2.9137,,,,,2.1029,,False,0.0
+no_earnings,TD Securities,upgrade,1,1.5089,,,,,2.1486,,False,0.0
+no_earnings,Telsey Advisory Group,upgrade,1,3.72,,,,,2.1714,,False,0.0
+no_earnings,Tudor Pickering,upgrade,1,-4.1084,,,,,2.0906,,False,0.0
+no_earnings,Vertical Research,upgrade,1,-1.0486,,,,,2.1222,,False,0.0
+no_earnings,Zelman & Assoc,upgrade,1,-1.0705,,,,,2.1219,,False,0.0
+no_earnings,B of A Securities,downgrade,19,-3.3381,1.6624,-2.008,-6.5963,-0.0798,-1.549,1,True,0.0
+no_earnings,Morgan Stanley,downgrade,27,-2.384,0.5999,-3.9738,-3.5599,-1.2081,-1.4787,2,True,0.0
+no_earnings,Oppenheimer,downgrade,15,-2.9959,0.8732,-3.431,-4.7073,-1.2845,-1.4676,3,True,0.0
+no_earnings,Jefferies,downgrade,17,-2.1856,0.9191,-2.378,-3.987,-0.3841,-1.3974,4,True,0.0
+no_earnings,Goldman Sachs,downgrade,12,-2.4729,1.3697,-1.8054,-5.1576,0.2118,-1.3941,5,True,0.0
+no_earnings,Citigroup,downgrade,15,-2.1881,1.4763,-1.4822,-5.0816,0.7053,-1.3872,6,True,0.0
+no_earnings,Wells Fargo,downgrade,14,-2.1961,0.9304,-2.3602,-4.0197,-0.3724,-1.3826,7,True,0.0
+no_earnings,UBS,downgrade,14,-2.0591,0.9297,-2.2148,-3.8813,-0.2369,-1.3698,8,True,0.0
+no_earnings,Raymond James,downgrade,14,-1.8975,0.8737,-2.1718,-3.6099,-0.1851,-1.3547,9,True,0.0
+no_earnings,JP Morgan,downgrade,11,-1.8813,1.0474,-1.7961,-3.9343,0.1716,-1.3424,10,True,0.0
+no_earnings,Deutsche Bank,downgrade,10,-1.5911,0.9105,-1.7476,-3.3757,0.1934,-1.3188,11,True,0.0
+no_earnings,HSBC,downgrade,14,-1.0103,0.9068,-1.1141,-2.7877,0.7671,-1.2718,12,True,0.0
+no_earnings,Barclays,downgrade,12,-0.8872,1.1509,-0.7709,-3.1429,1.3685,-1.2654,13,True,0.0
+no_earnings,Daiwa Capital,downgrade,11,-0.7677,0.6974,-1.1009,-2.1346,0.5991,-1.259,14,True,0.0
+no_earnings,Atlantic Equities,downgrade,10,-0.5559,0.59,-0.9421,-1.7122,0.6005,-1.2478,15,True,0.0
+no_earnings,BNP Paribas,downgrade,16,-0.7599,0.5987,-1.2693,-1.9333,0.4135,-1.242,16,True,0.0
+no_earnings,Baird,downgrade,14,-0.6383,1.0885,-0.5864,-2.7719,1.4952,-1.2371,17,True,0.0
+no_earnings,KeyBanc,downgrade,13,-0.3549,0.6509,-0.5453,-1.6306,0.9208,-1.2163,18,True,0.0
+no_earnings,Bernstein,downgrade,12,-0.252,0.9613,-0.2622,-2.1361,1.6321,-1.2138,19,True,0.0
+no_earnings,Redburn Atlantic,downgrade,15,-0.4074,0.4263,-0.9558,-1.2429,0.428,-1.2101,20,True,0.0
+no_earnings,Mizuho,downgrade,12,-0.0557,0.9492,-0.0586,-1.916,1.8047,-1.1979,21,True,0.0
+no_earnings,Wolfe Research,downgrade,18,0.1418,0.7948,0.1784,-1.4161,1.6996,-1.1302,22,True,0.0
+no_earnings,Argus Research,downgrade,17,0.4525,0.8984,0.5036,-1.3083,2.2133,-1.104,23,True,0.0
+no_earnings,DZ Bank,downgrade,9,-1.9813,0.7205,-2.7497,-3.3935,-0.569,-1.3412,,False,0.0
+no_earnings,RBC Capital,downgrade,8,-0.4983,1.9715,-0.2527,-4.3623,3.3658,-1.2542,,False,0.0
+no_earnings,Seaport Global,downgrade,8,-3.6309,2.2123,-1.6413,-7.967,0.7052,-1.4285,,False,0.0
+no_earnings,Guggenheim,downgrade,7,-0.2058,1.2133,-0.1696,-2.5839,2.1723,-1.2452,,False,0.0
+no_earnings,Piper Sandler,downgrade,7,-1.9597,0.8873,-2.2087,-3.6987,-0.2206,-1.3312,,False,0.0
+no_earnings,BMO Capital,downgrade,6,-2.6235,1.2,-2.1861,-4.9756,-0.2714,-1.3548,,False,0.0
+no_earnings,Erste Group,downgrade,6,-0.488,0.4853,-1.0054,-1.4392,0.4633,-1.2645,,False,0.0
+no_earnings,Evercore ISI,downgrade,6,-1.0996,1.4499,-0.7584,-3.9414,1.7422,-1.2903,,False,0.0
+no_earnings,Loop Capital,downgrade,6,-0.5235,1.1664,-0.4488,-2.8096,1.7626,-1.266,,False,0.0
+no_earnings,TD Cowen,downgrade,6,1.2626,0.8856,1.4257,-0.4731,2.9983,-1.1904,,False,0.0
+no_earnings,Truist Securities,downgrade,6,-0.5815,0.5123,-1.1351,-1.5857,0.4226,-1.2684,,False,0.0
+no_earnings,CFRA,downgrade,5,-0.9243,2.1318,-0.4336,-5.1025,3.254,-1.2855,,False,0.0
+no_earnings,KGI Securities,downgrade,5,-2.5684,2.0597,-1.247,-6.6055,1.4687,-1.3439,,False,0.0
+no_earnings,Melius Research,downgrade,5,-2.1597,1.5029,-1.4371,-5.1053,0.7859,-1.3293,,False,0.0
+no_earnings,MoffettNathanson,downgrade,5,-1.2294,0.4383,-2.8047,-2.0885,-0.3703,-1.2963,,False,0.0
+no_earnings,Northcoast Research,downgrade,5,-0.4771,0.9556,-0.4992,-2.3501,1.3959,-1.2696,,False,0.0
+no_earnings,Scotiabank,downgrade,5,-2.7807,1.1335,-2.4532,-5.0024,-0.559,-1.3514,,False,0.0
+no_earnings,Berenberg,downgrade,4,0.7675,2.3917,0.3209,-3.9203,5.4553,-1.2397,,False,0.0
+no_earnings,DA Davidson,downgrade,4,-1.9973,0.4149,-4.8144,-2.8105,-1.1842,-1.3188,,False,0.0
+no_earnings,New Street Research,downgrade,4,-0.1684,1.0653,-0.1581,-2.2564,1.9196,-1.2664,,False,0.0
+no_earnings,Northland Capital Markets,downgrade,4,2.2086,1.4467,1.5266,-0.6271,5.0442,-1.1984,,False,0.0
+no_earnings,Odeon Capital,downgrade,4,-2.2206,1.8949,-1.1719,-5.9345,1.4933,-1.3251,,False,0.0
+no_earnings,Freedom Capital Markets,downgrade,3,-1.8693,1.0412,-1.7952,-3.9101,0.1716,-1.3111,,False,0.0
+no_earnings,Gordon Haskett,downgrade,3,-0.5315,0.4215,-1.2611,-1.3576,0.2946,-1.2822,,False,0.0
+no_earnings,Leerink Partners,downgrade,3,-3.6699,0.4899,-7.4913,-4.6301,-2.7097,-1.35,,False,0.0
+no_earnings,Rothschild & Co,downgrade,3,-4.9792,1.6059,-3.1006,-8.1268,-1.8317,-1.3783,,False,0.0
+no_earnings,Societe Generale,downgrade,3,0.7314,1.0402,0.7031,-1.3074,2.7702,-1.2549,,False,0.0
+no_earnings,Stifel,downgrade,3,-1.7974,0.4375,-4.1082,-2.6549,-0.9399,-1.3095,,False,0.0
+no_earnings,William Blair,downgrade,3,-1.2319,2.3939,-0.5146,-5.9241,3.4602,-1.2973,,False,0.0
+no_earnings,Citizens,downgrade,2,-5.8668,5.4153,-1.0834,-16.4807,4.7472,-1.3651,,False,0.0
+no_earnings,Credit Suisse,downgrade,2,-0.3747,0.6764,-0.554,-1.7003,0.951,-1.2854,,False,0.0
+no_earnings,"Keefe, Bruyette & Woods",downgrade,2,0.0686,1.3355,0.0514,-2.549,2.6862,-1.2789,,False,0.0
+no_earnings,LightShed Partners,downgrade,2,-0.0067,3.0074,-0.0022,-5.9012,5.8878,-1.28,,False,0.0
+no_earnings,Macquarie,downgrade,2,-1.0875,0.8445,-1.2877,-2.7428,0.5678,-1.2957,,False,0.0
+no_earnings,Needham,downgrade,2,-0.7684,0.1126,-6.8226,-0.9892,-0.5477,-1.2911,,False,0.0
+no_earnings,OTR Global,downgrade,2,-0.6522,0.6538,-0.9975,-1.9336,0.6293,-1.2894,,False,0.0
+no_earnings,Phillip Securities,downgrade,2,0.4357,1.5309,0.2846,-2.5649,3.4363,-1.2736,,False,0.0
+no_earnings,Rosenblatt,downgrade,2,-3.4883,2.8917,-1.2063,-9.1562,2.1795,-1.3305,,False,0.0
+no_earnings,Susquehanna,downgrade,2,-0.2408,2.1015,-0.1146,-4.3598,3.8782,-1.2834,,False,0.0
+no_earnings,TD Securities,downgrade,2,6.4134,9.8329,0.6522,-12.859,25.6858,-1.1868,,False,0.0
+no_earnings,Wedbush,downgrade,2,-3.5751,3.9883,-0.8964,-11.3922,4.2419,-1.3318,,False,0.0
+no_earnings,Arete Research,downgrade,1,5.6813,,,,,-1.2478,,False,0.0
+no_earnings,BTIG,downgrade,1,4.0639,,,,,-1.2596,,False,0.0
+no_earnings,BWG Global,downgrade,1,-2.3276,,,,,-1.3063,,False,0.0
+no_earnings,Benchmark,downgrade,1,3.7927,,,,,-1.2616,,False,0.0
+no_earnings,Cantor Fitzgerald,downgrade,1,1.034,,,,,-1.2817,,False,0.0
+no_earnings,China Renaissance,downgrade,1,-2.5525,,,,,-1.3079,,False,0.0
+no_earnings,Cleveland Research,downgrade,1,1.382,,,,,-1.2792,,False,0.0
+no_earnings,Compass Point,downgrade,1,-0.1389,,,,,-1.2903,,False,0.0
+no_earnings,Craig-Hallum,downgrade,1,-10.1229,,,,,-1.3633,,False,0.0
+no_earnings,Edward Jones,downgrade,1,-0.8381,,,,,-1.2954,,False,0.0
+no_earnings,"Monness, Crespi, Hardt",downgrade,1,-7.5724,,,,,-1.3446,,False,0.0
+no_earnings,Pivotal Research,downgrade,1,-6.3801,,,,,-1.3359,,False,0.0
+no_earnings,R5 Capital,downgrade,1,1.6109,,,,,-1.2775,,False,0.0
+no_earnings,SMBC Nikko,downgrade,1,1.3795,,,,,-1.2792,,False,0.0
+no_earnings,Summit Insights Group,downgrade,1,-0.4068,,,,,-1.2923,,False,0.0
+no_earnings,Telsey Advisory Group,downgrade,1,0.8392,,,,,-1.2831,,False,0.0
+no_earnings,Vertical Research,downgrade,1,0.6911,,,,,-1.2842,,False,0.0
+single_call_days,DZ Bank,upgrade,18,4.6752,1.3357,3.5001,2.0572,7.2933,2.5599,1,True,61.1111
+single_call_days,Barclays,upgrade,20,4.224,1.0135,4.1676,2.2375,6.2105,2.5102,2,True,35.0
+single_call_days,JP Morgan,upgrade,23,3.9664,0.9591,4.1356,2.0866,5.8462,2.5024,3,True,8.6957
+single_call_days,B of A Securities,upgrade,33,2.9627,1.0391,2.8511,0.926,4.9993,2.3336,4,True,18.1818
+single_call_days,Deutsche Bank,upgrade,16,3.5152,1.4223,2.4716,0.7276,6.3028,2.3135,5,True,0.0
+single_call_days,KeyBanc,upgrade,13,3.4534,0.7894,4.375,1.9063,5.0005,2.2643,6,True,7.6923
+single_call_days,Citigroup,upgrade,27,2.8133,1.3614,2.0665,0.145,5.4816,2.2581,7,True,11.1111
+single_call_days,Truist Securities,upgrade,14,3.3253,1.1586,2.8701,1.0545,5.5962,2.2576,8,True,14.2857
+single_call_days,Evercore ISI,upgrade,11,3.5161,1.1709,3.0029,1.2211,5.8112,2.245,9,True,9.0909
+single_call_days,Raymond James,upgrade,17,2.8354,0.6997,4.0525,1.464,4.2068,2.2028,10,True,17.6471
+single_call_days,Guggenheim,upgrade,10,2.8361,1.1035,2.57,0.6731,4.999,2.1517,11,True,10.0
+single_call_days,Goldman Sachs,upgrade,13,2.6284,1.1328,2.3203,0.4082,4.8486,2.1444,12,True,15.3846
+single_call_days,UBS,upgrade,21,2.3647,0.6238,3.791,1.1421,3.5873,2.1274,13,True,14.2857
+single_call_days,Mizuho,upgrade,10,2.552,1.233,2.0698,0.1354,4.9686,2.1188,14,True,0.0
+single_call_days,RBC Capital,upgrade,14,2.2881,1.0527,2.1735,0.2248,4.3514,2.0972,15,True,7.1429
+single_call_days,Bernstein,upgrade,13,2.0617,0.6546,3.1494,0.7786,3.3447,2.0621,16,True,7.6923
+single_call_days,Wells Fargo,upgrade,21,1.9483,0.7814,2.4934,0.4168,3.4797,2.0377,17,True,9.5238
+single_call_days,Oppenheimer,upgrade,12,1.7858,1.0443,1.7101,-0.261,3.8326,2.0247,18,True,8.3333
+single_call_days,Morgan Stanley,upgrade,31,1.7765,0.7171,2.4773,0.3709,3.1821,1.9798,19,True,3.2258
+single_call_days,Jefferies,upgrade,28,1.7226,1.5075,1.1426,-1.2322,4.6774,1.9712,20,True,7.1429
+single_call_days,Argus Research,upgrade,22,1.6336,1.0316,1.5836,-0.3883,3.6555,1.9665,21,True,27.2727
+single_call_days,HSBC,upgrade,27,1.6896,1.0121,1.6694,-0.2941,3.6733,1.965,22,True,22.2222
+single_call_days,Seaport Global,upgrade,12,1.3391,1.913,0.7,-2.4104,5.0886,1.9642,23,True,25.0
+single_call_days,TD Cowen,upgrade,11,1.2755,0.388,3.2872,0.515,2.0359,1.9633,24,True,9.0909
+single_call_days,Wolfe Research,upgrade,30,1.6794,0.6332,2.6523,0.4383,2.9204,1.9544,25,True,6.6667
+single_call_days,Daiwa Capital,upgrade,15,1.2815,0.7336,1.7469,-0.1564,2.7194,1.9342,26,True,6.6667
+single_call_days,Piper Sandler,upgrade,16,1.1073,0.8943,1.2382,-0.6455,2.8601,1.897,27,True,6.25
+single_call_days,Baird,upgrade,10,0.3865,0.7763,0.4978,-1.1351,1.908,1.8685,28,True,20.0
+single_call_days,Erste Group,upgrade,10,0.382,0.563,0.6784,-0.7215,1.4854,1.868,29,True,0.0
+single_call_days,BNP Paribas,upgrade,16,0.8573,0.6663,1.2866,-0.4487,2.1633,1.8538,30,True,6.25
+single_call_days,Redburn Atlantic,upgrade,14,0.1493,0.6433,0.232,-1.1116,1.4101,1.7663,31,True,0.0
+single_call_days,Freedom Capital Markets,upgrade,11,-1.3498,1.7952,-0.7519,-4.8683,2.1687,1.6333,32,True,36.3636
+single_call_days,BMO Capital,upgrade,9,-0.7995,0.9919,-0.806,-2.7436,1.1447,1.761,,False,33.3333
+single_call_days,Loop Capital,upgrade,9,1.4997,0.9513,1.5765,-0.3648,3.3642,2.003,,False,0.0
+single_call_days,Berenberg,upgrade,8,0.709,1.7127,0.4139,-2.6479,4.0658,1.9341,,False,25.0
+single_call_days,Credit Suisse,upgrade,8,0.843,1.2508,0.674,-1.6086,3.2946,1.9468,,False,12.5
+single_call_days,DA Davidson,upgrade,8,3.2957,1.3213,2.4943,0.706,5.8854,2.179,,False,12.5
+single_call_days,Susquehanna,upgrade,8,3.3835,1.4371,2.3544,0.5668,6.2002,2.1873,,False,25.0
+single_call_days,Atlantic Equities,upgrade,7,1.8498,1.4649,1.2627,-1.0214,4.7209,2.0444,,False,14.2857
+single_call_days,New Street Research,upgrade,7,2.9642,1.7715,1.6732,-0.508,6.4364,2.1378,,False,14.2857
+single_call_days,Northland Capital Markets,upgrade,7,1.46,3.3052,0.4417,-5.0181,7.9381,2.0117,,False,14.2857
+single_call_days,Odeon Capital,upgrade,7,1.0635,1.7843,0.596,-2.4338,4.5607,1.9785,,False,14.2857
+single_call_days,Scotiabank,upgrade,7,0.9779,0.9483,1.0312,-0.8808,2.8365,1.9713,,False,28.5714
+single_call_days,Wedbush,upgrade,7,1.7156,1.2322,1.3922,-0.6996,4.1307,2.0332,,False,0.0
+single_call_days,Gordon Haskett,upgrade,6,2.3265,0.3331,6.9837,1.6736,2.9795,2.0814,,False,0.0
+single_call_days,Melius Research,upgrade,6,4.4051,1.3036,3.3792,1.85,6.9601,2.2326,,False,0.0
+single_call_days,Stifel,upgrade,6,0.7245,2.4466,0.2961,-4.0708,5.5198,1.9649,,False,50.0
+single_call_days,CFRA,upgrade,5,-0.2321,2.7177,-0.0854,-5.5589,5.0946,1.9215,,False,0.0
+single_call_days,KGI Securities,upgrade,5,5.3202,5.2302,1.0172,-4.931,15.5714,2.2621,,False,40.0
+single_call_days,Leerink Partners,upgrade,5,3.9562,1.4652,2.7002,1.0845,6.828,2.1784,,False,20.0
+single_call_days,MoffettNathanson,upgrade,5,3.0827,0.995,3.0982,1.1325,5.0328,2.1248,,False,0.0
+single_call_days,Northcoast Research,upgrade,5,1.4044,0.9293,1.5112,-0.4171,3.2259,2.0219,,False,20.0
+single_call_days,BTIG,upgrade,4,0.7407,0.3503,2.1148,0.0542,1.4272,1.9966,,False,0.0
+single_call_days,Needham,upgrade,4,6.1102,2.5991,2.3509,1.016,11.2043,2.2633,,False,50.0
+single_call_days,Edward Jones,upgrade,3,-4.0714,4.3064,-0.9454,-12.512,4.3692,1.8308,,False,33.3333
+single_call_days,"Keefe, Bruyette & Woods",upgrade,3,0.0142,0.5874,0.0242,-1.1371,1.1655,1.9849,,False,0.0
+single_call_days,Macquarie,upgrade,3,3.3917,2.6058,1.3016,-1.7157,8.4992,2.1124,,False,33.3333
+single_call_days,OTR Global,upgrade,3,-0.7761,0.3909,-1.9855,-1.5422,-0.01,1.9551,,False,0.0
+single_call_days,Tigress Financial,upgrade,3,-2.7673,3.525,-0.785,-9.6763,4.1417,1.88,,False,0.0
+single_call_days,Canaccord Genuity,upgrade,2,3.0447,4.5866,0.6638,-5.9451,12.0345,2.0872,,False,0.0
+single_call_days,Cantor Fitzgerald,upgrade,2,1.5702,2.0405,0.7695,-2.4292,5.5696,2.0497,,False,0.0
+single_call_days,China Renaissance,upgrade,2,1.3453,3.8417,0.3502,-6.1844,8.875,2.0439,,False,50.0
+single_call_days,Itau BBA,upgrade,2,3.9362,0.2949,13.3488,3.3583,4.5142,2.11,,False,50.0
+single_call_days,MKM Partners,upgrade,2,1.7628,0.5288,3.3337,0.7264,2.7993,2.0546,,False,0.0
+single_call_days,Maxim Group,upgrade,2,2.6179,2.6032,1.0057,-2.4843,7.7202,2.0764,,False,50.0
+single_call_days,Phillip Securities,upgrade,2,0.5732,3.4869,0.1644,-6.2611,7.4075,2.0243,,False,50.0
+single_call_days,Rosenblatt,upgrade,2,2.834,0.4326,6.5509,1.9861,3.6819,2.0819,,False,50.0
+single_call_days,Roth MKM,upgrade,2,1.7217,2.7012,0.6374,-3.5726,7.016,2.0535,,False,0.0
+single_call_days,Rothschild & Co,upgrade,2,1.5964,2.4549,0.6503,-3.2153,6.4081,2.0503,,False,0.0
+single_call_days,Societe Generale,upgrade,2,1.3018,0.7661,1.6994,-0.1996,2.8033,2.0428,,False,0.0
+single_call_days,Summit Insights Group,upgrade,2,-1.4367,4.5276,-0.3173,-10.3109,7.4375,1.9731,,False,100.0
+single_call_days,William Blair,upgrade,2,-0.5955,0.268,-2.2221,-1.1207,-0.0702,1.9945,,False,0.0
+single_call_days,BWG Global,upgrade,1,3.2394,,,,,2.0774,,False,0.0
+single_call_days,Benchmark,upgrade,1,2.2869,,,,,2.0651,,False,0.0
+single_call_days,CICC,upgrade,1,-5.5745,,,,,1.9637,,False,100.0
+single_call_days,Citizens,upgrade,1,1.661,,,,,2.057,,False,0.0
+single_call_days,Compass Point,upgrade,1,-4.5865,,,,,1.9764,,False,0.0
+single_call_days,Craig-Hallum,upgrade,1,2.9896,,,,,2.0742,,False,100.0
+single_call_days,Huber Research,upgrade,1,11.0068,,,,,2.1776,,False,100.0
+single_call_days,Independent Research,upgrade,1,0.7156,,,,,2.0448,,False,100.0
+single_call_days,Kalinowski Research,upgrade,1,1.1604,,,,,2.0506,,False,0.0
+single_call_days,R5 Capital,upgrade,1,1.3837,,,,,2.0535,,False,100.0
+single_call_days,SMBC Nikko,upgrade,1,9.4832,,,,,2.158,,False,100.0
+single_call_days,Stephens & Co.,upgrade,1,-2.0712,,,,,2.0089,,False,100.0
+single_call_days,TD Securities,upgrade,1,1.5089,,,,,2.0551,,False,0.0
+single_call_days,Telsey Advisory Group,upgrade,1,3.72,,,,,2.0836,,False,0.0
+single_call_days,Tudor Pickering,upgrade,1,-4.1084,,,,,1.9826,,False,0.0
+single_call_days,Vertical Group,upgrade,1,0.5954,,,,,2.0433,,False,100.0
+single_call_days,Vertical Research,upgrade,1,-1.0486,,,,,2.0221,,False,0.0
+single_call_days,Zelman & Assoc,upgrade,1,-1.0705,,,,,2.0218,,False,0.0
+single_call_days,B of A Securities,downgrade,21,-4.1431,1.6085,-2.5758,-7.2957,-0.9904,-2.405,1,True,19.0476
+single_call_days,DZ Bank,downgrade,17,-4.3738,1.6512,-2.6489,-7.6101,-1.1375,-2.3745,2,True,47.0588
+single_call_days,Oppenheimer,downgrade,14,-4.3138,1.2532,-3.4421,-6.7702,-1.8574,-2.3036,3,True,7.1429
+single_call_days,Citigroup,downgrade,17,-3.8774,1.0016,-3.8712,-5.8405,-1.9143,-2.2896,4,True,17.6471
+single_call_days,Goldman Sachs,downgrade,16,-3.1215,1.1206,-2.7856,-5.3178,-0.9252,-2.1505,5,True,25.0
+single_call_days,Jefferies,downgrade,16,-2.7773,1.6646,-1.6685,-6.04,0.4853,-2.0946,6,True,6.25
+single_call_days,Morgan Stanley,downgrade,29,-2.4666,0.5608,-4.3982,-3.5658,-1.3674,-2.0934,7,True,6.8966
+single_call_days,JP Morgan,downgrade,13,-2.556,1.0729,-2.3824,-4.6589,-0.4531,-2.0429,8,True,15.3846
+single_call_days,Barclays,downgrade,13,-2.3593,1.4172,-1.6648,-5.137,0.4184,-2.0161,9,True,30.7692
+single_call_days,Wells Fargo,downgrade,14,-2.1961,0.9304,-2.3602,-4.0197,-0.3724,-1.996,10,True,0.0
+single_call_days,Deutsche Bank,downgrade,14,-2.0747,1.1849,-1.751,-4.3971,0.2477,-1.9783,11,True,28.5714
+single_call_days,UBS,downgrade,15,-1.9195,0.8767,-2.1895,-3.6378,-0.2012,-1.9554,12,True,6.6667
+single_call_days,Raymond James,downgrade,16,-1.8126,0.8112,-2.2345,-3.4026,-0.2227,-1.9377,13,True,12.5
+single_call_days,Baird,downgrade,13,-1.6814,0.9748,-1.7249,-3.5921,0.2292,-1.9237,14,True,7.6923
+single_call_days,Wolfe Research,downgrade,21,-1.6277,1.2092,-1.3461,-3.9978,0.7424,-1.8941,15,True,14.2857
+single_call_days,Atlantic Equities,downgrade,11,-1.3257,0.9367,-1.4153,-3.1616,0.5103,-1.887,16,True,9.0909
+single_call_days,Argus Research,downgrade,18,-1.5274,1.7418,-0.8769,-4.9413,1.8865,-1.884,17,True,16.6667
+single_call_days,Daiwa Capital,downgrade,11,-0.7677,0.6974,-1.1009,-2.1346,0.5991,-1.8213,18,True,0.0
+single_call_days,Bernstein,downgrade,12,-0.252,0.9613,-0.2622,-2.1361,1.6321,-1.7446,19,True,0.0
+single_call_days,BNP Paribas,downgrade,15,-0.5165,0.5847,-0.8833,-1.6625,0.6296,-1.7393,20,True,0.0
+single_call_days,Redburn Atlantic,downgrade,15,-0.5088,0.4033,-1.2616,-1.2992,0.2817,-1.7381,21,True,6.6667
+single_call_days,Mizuho,downgrade,13,-0.1006,0.8743,-0.1151,-1.8142,1.613,-1.7083,22,True,7.6923
+single_call_days,HSBC,downgrade,21,-0.7008,1.4067,-0.4982,-3.458,2.0563,-1.7058,23,True,33.3333
+single_call_days,KeyBanc,downgrade,16,-0.1914,0.5388,-0.3552,-1.2475,0.8647,-1.674,24,True,18.75
+single_call_days,Piper Sandler,downgrade,9,-1.8526,0.5776,-3.2073,-2.9848,-0.7205,-1.9512,,False,33.3333
+single_call_days,Seaport Global,downgrade,9,-3.1934,1.5366,-2.0782,-6.2052,-0.1816,-2.0832,,False,22.2222
+single_call_days,Truist Securities,downgrade,9,-2.2227,1.0318,-2.1541,-4.2451,-0.2003,-1.9876,,False,33.3333
+single_call_days,BMO Capital,downgrade,8,-2.2527,0.9951,-2.2639,-4.203,-0.3024,-1.9877,,False,25.0
+single_call_days,KGI Securities,downgrade,8,-3.3574,2.3957,-1.4014,-8.0528,1.3381,-2.0855,,False,37.5
+single_call_days,Scotiabank,downgrade,8,-2.8257,0.9862,-2.8651,-4.7587,-0.8927,-2.0384,,False,37.5
+single_call_days,CFRA,downgrade,7,-0.8568,1.7158,-0.4994,-4.2198,2.5062,-1.8754,,False,42.8571
+single_call_days,Evercore ISI,downgrade,7,-2.5912,1.9304,-1.3423,-6.3749,1.1924,-2.0112,,False,14.2857
+single_call_days,RBC Capital,downgrade,7,-2.423,0.8586,-2.822,-4.1059,-0.7402,-1.9981,,False,14.2857
+single_call_days,Erste Group,downgrade,6,-0.488,0.4853,-1.0054,-1.4392,0.4633,-1.8619,,False,0.0
+single_call_days,Guggenheim,downgrade,6,0.4257,1.2258,0.3473,-1.9769,2.8284,-1.7999,,False,0.0
+single_call_days,Odeon Capital,downgrade,6,-1.3667,1.5353,-0.8902,-4.3758,1.6425,-1.9216,,False,33.3333
+single_call_days,TD Cowen,downgrade,6,1.2626,0.8856,1.4257,-0.4731,2.9983,-1.7431,,False,0.0
+single_call_days,Edward Jones,downgrade,5,-12.8563,5.0594,-2.5411,-22.7728,-2.9398,-2.5853,,False,80.0
+single_call_days,Loop Capital,downgrade,5,0.234,1.0862,0.2155,-1.895,2.363,-1.8363,,False,0.0
+single_call_days,Melius Research,downgrade,5,-2.1597,1.5029,-1.4371,-5.1053,0.7859,-1.9733,,False,0.0
+single_call_days,MoffettNathanson,downgrade,5,-1.2294,0.4383,-2.8047,-2.0885,-0.3703,-1.92,,False,0.0
+single_call_days,New Street Research,downgrade,5,-1.3833,1.4687,-0.9419,-4.2619,1.4953,-1.9289,,False,20.0
+single_call_days,Northcoast Research,downgrade,5,-0.4771,0.9556,-0.4992,-2.3501,1.3959,-1.877,,False,0.0
+single_call_days,Berenberg,downgrade,4,0.7675,2.3917,0.3209,-3.9203,5.4553,-1.8356,,False,0.0
+single_call_days,Freedom Capital Markets,downgrade,4,-1.5199,0.815,-1.865,-3.1172,0.0774,-1.9415,,False,25.0
+single_call_days,Northland Capital Markets,downgrade,4,2.2086,1.4467,1.5266,-0.6271,5.0442,-1.7689,,False,0.0
+single_call_days,Societe Generale,downgrade,4,-0.8057,1.704,-0.4728,-4.1455,2.5342,-1.9084,,False,25.0
+single_call_days,Stifel,downgrade,4,-2.4395,0.7127,-3.4228,-3.8364,-1.0425,-1.9841,,False,25.0
+single_call_days,Summit Insights Group,downgrade,4,-1.0287,2.9443,-0.3494,-6.7996,4.7422,-1.9188,,False,75.0
+single_call_days,China Renaissance,downgrade,3,-2.6769,0.2294,-11.6669,-3.1266,-2.2272,-1.9871,,False,66.6667
+single_call_days,Citizens,downgrade,3,-6.6708,3.2282,-2.0664,-12.9982,-0.3435,-2.1274,,False,33.3333
+single_call_days,Credit Suisse,downgrade,3,-5.5367,5.1768,-1.0695,-15.6831,4.6098,-2.0876,,False,33.3333
+single_call_days,DA Davidson,downgrade,3,-5.3777,3.3408,-1.6097,-11.9258,1.1704,-2.082,,False,33.3333
+single_call_days,Leerink Partners,downgrade,3,-3.6699,0.4899,-7.4913,-4.6301,-2.7097,-2.022,,False,0.0
+single_call_days,Macquarie,downgrade,3,-2.2329,1.2449,-1.7937,-4.673,0.2071,-1.9715,,False,33.3333
+single_call_days,Phillip Securities,downgrade,3,-3.7465,3.7536,-0.9981,-11.1036,3.6106,-2.0247,,False,66.6667
+single_call_days,Rothschild & Co,downgrade,3,-4.9792,1.6059,-3.1006,-8.1268,-1.8317,-2.068,,False,0.0
+single_call_days,Susquehanna,downgrade,3,-0.9907,1.4264,-0.6946,-3.7864,1.805,-1.9278,,False,33.3333
+single_call_days,Wedbush,downgrade,3,-3.2975,2.3193,-1.4218,-7.8433,1.2484,-2.0089,,False,33.3333
+single_call_days,William Blair,downgrade,3,-1.2319,2.3939,-0.5146,-5.9241,3.4602,-1.9363,,False,0.0
+single_call_days,BTIG,downgrade,2,0.1928,3.8712,0.0498,-7.3947,7.7802,-1.9109,,False,50.0
+single_call_days,Craig-Hallum,downgrade,2,1.3749,11.4977,0.1196,-21.1607,23.9104,-1.8829,,False,50.0
+single_call_days,"Keefe, Bruyette & Woods",downgrade,2,0.0686,1.3355,0.0514,-2.549,2.6862,-1.9138,,False,0.0
+single_call_days,LightShed Partners,downgrade,2,-0.0067,3.0074,-0.0022,-5.9012,5.8878,-1.9156,,False,0.0
+single_call_days,"Monness, Crespi, Hardt",downgrade,2,-7.6774,0.105,-73.1467,-7.8831,-7.4716,-2.0974,,False,50.0
+single_call_days,Needham,downgrade,2,-0.7684,0.1126,-6.8226,-0.9892,-0.5477,-1.9337,,False,0.0
+single_call_days,OTR Global,downgrade,2,-0.6522,0.6538,-0.9975,-1.9336,0.6293,-1.9309,,False,0.0
+single_call_days,R5 Capital,downgrade,2,3.0257,1.4148,2.1385,0.2526,5.7988,-1.8438,,False,50.0
+single_call_days,Rosenblatt,downgrade,2,-4.0519,3.4553,-1.1727,-10.8243,2.7205,-2.0115,,False,50.0
+single_call_days,TD Securities,downgrade,2,6.4134,9.8329,0.6522,-12.859,25.6858,-1.7635,,False,0.0
+single_call_days,Arete Research,downgrade,1,5.6813,,,,,-1.8703,,False,0.0
+single_call_days,BWG Global,downgrade,1,-2.3276,,,,,-1.9663,,False,0.0
+single_call_days,Benchmark,downgrade,1,3.7927,,,,,-1.893,,False,0.0
+single_call_days,Cantor Fitzgerald,downgrade,1,1.034,,,,,-1.926,,False,0.0
+single_call_days,Cleveland Research,downgrade,1,1.382,,,,,-1.9219,,False,0.0
+single_call_days,Compass Point,downgrade,1,-0.1389,,,,,-1.9401,,False,0.0
+single_call_days,Fox Advisors,downgrade,1,1.4191,,,,,-1.9214,,False,100.0
+single_call_days,Gordon Haskett,downgrade,1,-1.3677,,,,,-1.9548,,False,0.0
+single_call_days,Maxim Group,downgrade,1,5.618,,,,,-1.8711,,False,100.0
+single_call_days,Roth MKM,downgrade,1,-1.8024,,,,,-1.9601,,False,100.0
+single_call_days,SMBC Nikko,downgrade,1,1.3795,,,,,-1.9219,,False,0.0
+single_call_days,Telsey Advisory Group,downgrade,1,0.8392,,,,,-1.9284,,False,0.0
+single_call_days,Tudor Pickering,downgrade,1,-9.3146,,,,,-2.0501,,False,100.0
+single_call_days,Vertical Research,downgrade,1,0.6911,,,,,-1.9301,,False,0.0

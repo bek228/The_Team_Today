@@ -1,0 +1,7 @@
+sample,direction,n_brokers,spearman_rho,same_rank_1
+all,upgrade,34,0.9181,False
+all,downgrade,28,0.9272,False
+no_earnings,upgrade,31,0.9206,False
+no_earnings,downgrade,23,0.9111,False
+single_call_days,upgrade,32,0.9113,False
+single_call_days,downgrade,24,0.9513,False
