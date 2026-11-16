@@ -135,7 +135,7 @@ def page_intro():
             "See the Broker leaderboard page."
         )
 
-    c = st.columns(6)
+    c = st.columns(3) + st.columns(3)   # two rows of three, so labels and values are never cut off
     c[0].metric("Firms", f"{D.num(summ, 'n_firms', int)}", border=True,
                 help=f"{D.num(summ, 'n_firms_with_rating_changes', int)} of them have at least one rating "
                      "change in the window.")
