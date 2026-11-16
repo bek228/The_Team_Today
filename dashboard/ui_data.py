@@ -190,6 +190,29 @@ def _panel_paths(ev_path, ep_path, pan_path, mtimes):
     return pd.concat(rows, ignore_index=True).round(4)
 
 
+@st.cache_data(show_spinner="Loading event_panel.csv ...")
+def _read_panel(path_str, mtime):
+    """Only the columns the single-event chart needs (the file is about 7 MB)."""
+    return pd.read_csv(path_str, usecols=["event_id", "t", "AR", "CAR"])
+
+
+def event_panel():
+    """Daily AR and CAR (decimals) per rating change and event day, from data/processed/event_panel.csv."""
+    rel = "data/processed/event_panel.csv"
+    path = ROOT / rel
+    if not path.exists():
+        missing_file(rel)
+    return _read_panel(str(path), path.stat().st_mtime)
+
+
+def group_means(f, by, min_n):
+    """Mean CAR[-1,+1] (percent) per group and direction, keeping groups with at least min_n calls."""
+    g = f.groupby([by, "direction"])["car_m1_p1"].agg(n="size", mean="mean").reset_index()
+    g = g[g["n"] >= min_n]
+    return pd.DataFrame({"group": g[by], "direction": g["direction"], "n": g["n"].astype(int),
+                         "mean_pct": 100 * g["mean"]})
+
+
 def panel_car_paths():
     """CAR paths recomputed from the event panel, for every sample (percent, rounded like the file)."""
     paths = ["data/processed/events.csv", "data/processed/episodes.csv", "data/processed/event_panel.csv"]
