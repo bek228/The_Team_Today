@@ -1,0 +1,11 @@
+first_call_event_id,direction,timing,ar_t_minus_1_pct,ar_t0_pct
+SBUX_20240814_DeutscheBank,upgrade,before_open,23.3703,-2.1562
+AMD_20251007_Jefferies,upgrade,before_open,23.1187,4.6145
+UNH_20250514_BofASecurities,downgrade,during_market,-17.9866,-1.139
+NFLX_20260302_JPMorgan,upgrade,before_open,14.2308,0.9292
+NVDA_20250128_TigressFinancial,upgrade,during_market,-13.0538,6.3441
+TSLA_20220103_CFRA,upgrade,after_close,12.3887,-4.1501
+AMD_20260427_NorthlandCapitalMarkets,downgrade,before_open,11.8832,-4.3687
+BMY_20241112_LeerinkPartners,upgrade,before_open,10.4429,-1.2913
+BKNG_20260204_Citizens,downgrade,during_market,-8.5366,-0.3642
+BA_20220616_Citigroup,upgrade,before_open,7.8732,4.0542

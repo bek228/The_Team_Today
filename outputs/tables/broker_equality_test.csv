@@ -1,0 +1,19 @@
+sample,direction,test,n_brokers,n_obs,statistic,p_value,tau_pct
+all,upgrade,one-way ANOVA F,34,638,1.2768,0.1409,0.7244
+all,upgrade,Kruskal-Wallis H,34,638,59.5591,0.0031,0.7244
+all,upgrade,permutation F (2000 label shuffles),34,638,1.2768,0.1445,0.7244
+all,downgrade,one-way ANOVA F,28,476,1.2054,0.2217,0.2452
+all,downgrade,Kruskal-Wallis H,28,476,36.2266,0.1104,0.2452
+all,downgrade,permutation F (2000 label shuffles),28,476,1.2054,0.2175,0.2452
+no_earnings,upgrade,one-way ANOVA F,31,503,1.1156,0.3104,0.4798
+no_earnings,upgrade,Kruskal-Wallis H,31,503,40.5077,0.0954,0.4798
+no_earnings,upgrade,permutation F (2000 label shuffles),31,503,1.1156,0.297,0.4798
+no_earnings,downgrade,one-way ANOVA F,23,332,1.2407,0.2115,0.3205
+no_earnings,downgrade,Kruskal-Wallis H,23,332,29.4685,0.132,0.3205
+no_earnings,downgrade,permutation F (2000 label shuffles),23,332,1.2407,0.2155,0.3205
+single_call_days,upgrade,one-way ANOVA F,32,559,1.1521,0.2645,0.5279
+single_call_days,upgrade,Kruskal-Wallis H,32,559,56.2706,0.0036,0.5279
+single_call_days,upgrade,permutation F (2000 label shuffles),32,559,1.1521,0.257,0.5279
+single_call_days,downgrade,one-way ANOVA F,24,381,1.2482,0.2005,0.5203
+single_call_days,downgrade,Kruskal-Wallis H,24,381,38.116,0.0248,0.5203
+single_call_days,downgrade,permutation F (2000 label shuffles),24,381,1.2482,0.2095,0.5203
