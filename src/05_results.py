@@ -15,6 +15,10 @@ Outputs (outputs/tables/): sample_summary, window_summary, car_by_day, ar_by_day
   single_call_days), broker_leaderboard_standardized, broker_rank_stability,
   broker_equality_test (ANOVA, Kruskal-Wallis, permutation F), robustness,
   earnings_comparison, earnings_regression (.csv). Headline sample = 'clean' episodes.
+  robustness.csv ends with the rows added after the self-audit: clustered standard errors for
+  the clean sample, timestamps read as Eastern (from events_eastern.csv), a backward-looking
+  clean filter, earnings timing from earlier announcements only, and three estimation-window
+  rows. sample_summary.csv ends with the counts that go with them.
 Outputs (outputs/figures/): car_upgrade_vs_downgrade.png, car_earnings_split.png, broker_leaderboard.png
 """
 import matplotlib
@@ -31,6 +35,8 @@ ev = pd.read_csv(PROC / 'events.csv', parse_dates=['day0'])
 ep = pd.read_csv(PROC / 'episodes.csv', parse_dates=['day0'])
 panel = pd.read_csv(PROC / 'event_panel.csv')
 ev_next = pd.read_csv(PROC / 'events_day0_next.csv', parse_dates=['day0'])
+ev_east = pd.read_csv(PROC / 'events_eastern.csv', parse_dates=['day0'])
+earn = pd.read_csv(PROC / 'earnings.csv')
 
 DIRS = ['upgrade', 'downgrade']
 COLOR = {'upgrade': '#2a78d6', 'downgrade': '#eb6834', 'no_earnings': '#2a78d6', 'near_earnings': '#eb6834'}
@@ -39,9 +45,15 @@ ep2 = ep[ep['direction'].isin(DIRS)].copy()   # episodes without the mixed ones
 
 
 def pick(df, sample):
-    """all | clean | no_earnings | near_earnings | clean_window | earnings_at_t_minus_1"""
+    """all | clean | no_earnings | near_earnings | clean_window | earnings_at_t_minus_1
+    | clean_backward | clean_past_only (the last two are robustness versions of clean)"""
     if sample == 'clean':              # HEADLINE: no earnings in [-1,+2], no other call on the stock
         return df[~df['near_earnings'] & ~df['other_call_in_window']]   # 1-2 days away
+    if sample == 'clean_backward':     # clean, using only what is known by day 0: drop if the earnings
+        # day 0 is on day 0 or 1-2 trading days before it, or another call came 1-2 days before
+        return df[~df['days_from_earnings'].isin([0, 1, 2]) & ~df['other_call_before']]
+    if sample == 'clean_past_only':    # clean, with earnings timing placeholders from earlier reports only
+        return df[~df['near_earnings_past_only'] & ~df['other_call_in_window']]
     if sample == 'no_earnings':        # no earnings day 0 within [-1,+2] of day 0
         return df[~df['near_earnings']]
     if sample == 'near_earnings':
@@ -312,6 +324,47 @@ for d in DIRS:  # same mean, standard errors clustered by day 0 (calendar day)
         cov_type='cluster', cov_kwds={'groups': pd.factorize(s['day0'])[0]})
     rows.append(dict(spec='SE clustered by day0', direction=d, n=len(s), mean_pct=100 * fit.params[0],
                      se_pct=100 * fit.bse[0], t_stat=fit.tvalues[0]))
+
+# rows added after the self-audit; they come after the rows above, which do not move
+# the clean headline with clustered standard errors: by day 0, then two-way by stock and day 0
+clean = pick(ep2, 'clean')
+for spec, two_way in [('clean (headline), SE clustered by day0', False),
+                      ('clean (headline), SE clustered two-way by stock and day0', True)]:
+    for d in DIRS:
+        s = clean[clean['direction'] == d]
+        day_codes = pd.factorize(s['day0'])[0]        # 0, 1, 2, ... one number per calendar day
+        stock_codes = pd.factorize(s['ticker'])[0]    # one number per stock
+        groups = np.column_stack([stock_codes, day_codes]) if two_way else day_codes
+        fit = sm.OLS(s['car_m1_p1'].values, np.ones(len(s))).fit(cov_type='cluster', cov_kwds={'groups': groups})
+        rows.append(dict(spec=spec, direction=d, n=len(s), mean_pct=100 * fit.params[0],
+                         se_pct=100 * fit.bse[0], t_stat=fit.tvalues[0]))
+
+# Yahoo's time stamps read as Eastern instead of UTC: episodes rebuilt from events_eastern.csv
+ep_east = (ev_east.groupby(['ticker', 'day0'])
+           .agg(direction=('direction', lambda s: s.iloc[0] if s.nunique() == 1 else 'mixed'),
+                near_earnings=('near_earnings', 'first'),
+                other_call_in_window=('other_call_in_window', 'first'),
+                car_m1_p1=('car_m1_p1', 'first')).reset_index())
+ep_east = ep_east[ep_east['direction'].isin(DIRS)]
+more_specs = {
+    'timestamps read as Eastern (not UTC): all episodes': (ep_east, 'car_m1_p1'),
+    'timestamps read as Eastern (not UTC): clean': (pick(ep_east, 'clean'), 'car_m1_p1'),
+    'clean, backward-looking filter: earnings day 0 at t = -2..0, other call at t = -2..-1':
+        (pick(ep2, 'clean_backward'), 'car_m1_p1'),
+    'clean, earnings timing placeholders from earlier announcements only':
+        (pick(ep2, 'clean_past_only'), 'car_m1_p1'),
+    # estimation window [-250,-30]: first drop the episodes whose window contains other news ...
+    'clean, no other rating change in the estimation window': (clean[~clean['est_has_other_call']], 'car_m1_p1'),
+    'clean, no earnings day and no other rating change in the estimation window':
+        (clean[~clean['est_has_other_call'] & ~clean['est_has_earnings']], 'car_m1_p1'),
+    # ... then keep the episodes and take those days out of the estimation window instead
+    'clean, market model estimated without earnings and rating-change days': (clean, 'car_m1_p1_cleanest'),
+}
+for spec, (df, col) in more_specs.items():
+    for d in DIRS:
+        r = mean_se(df.loc[df['direction'] == d, col])   # n can be 0: the row is still written, empty
+        rows.append(dict(spec=spec, direction=d, n=r['n'], mean_pct=r['mean_pct'], se_pct=r['se_pct'],
+                         t_stat=r['t_stat']))
 robust = pd.DataFrame(rows)
 save(robust, 'robustness.csv')
 print(robust.round(2).to_string(index=False))
@@ -361,6 +414,21 @@ pulled = man.loc[man['file'].str.startswith('data/raw/ratings/'), 'pulled_utc'].
 ranked_all = board[(board['sample'] == 'all') & board['meets_min_n']]
 ranked_ne = board[(board['sample'] == 'no_earnings') & board['meets_min_n']]
 members_dropped = pd.read_csv(RAW / 'universe_dropped.csv')
+
+# pieces for the counts added after the self-audit (the last block of the list below)
+# day 0 of each call in the main run next to its day 0 when the stamps are read as Eastern
+east = ev[['event_id', 'day0']].merge(ev_east[['event_id', 'day0']], on='event_id', how='left',
+                                      suffixes=('', '_eastern'), validate='1:1')
+# earnings timing placeholders; earnings.csv is sorted by firm and time, so the running count of
+# real (non-placeholder) timings tells whether a placeholder has an earlier real one to learn from
+placeholder = earn['timing_raw'] == 'during_market'
+real_so_far = (~placeholder).groupby(earn['ticker']).cumsum()
+either = ep2['est_has_earnings'] | ep2['est_has_other_call']
+either_clean = clean['est_has_earnings'] | clean['est_has_other_call']
+# leaderboard unit = rating change: how many calls sit on mixed days or share their CAR
+on_mixed_day = ev.groupby(['ticker', 'day0'])['direction'].transform('nunique') > 1
+ne_calls = pick(ev, 'no_earnings')
+
 summary = [
     ('n_firms', len(firms())),
     ('n_firms_with_rating_changes', ev['ticker'].nunique()),
@@ -414,6 +482,29 @@ summary = [
      round(100 * pick(ev, 'no_earnings').query('direction == "upgrade"')['car_m1_p1'].mean(), 4)),
     ('mean_car_m1_p1_pct_no_earnings_calls_downgrade',
      round(100 * pick(ev, 'no_earnings').query('direction == "downgrade"')['car_m1_p1'].mean(), 4)),
+    # added after the self-audit; kept at the end so the rows above do not move
+    # timestamps read as Eastern instead of UTC: calls whose day 0 is a different day
+    ('n_rating_changes_day0_moves_if_eastern', (east['day0'] != east['day0_eastern']).sum()),
+    # earnings timing placeholders filled from earlier announcements only (timing_past_only)
+    ('n_earnings_timing_placeholders', placeholder.sum()),
+    ('n_earnings_timing_changed_past_only', (earn['timing'] != earn['timing_past_only']).sum()),
+    ('n_earnings_placeholders_no_earlier_announcement', (placeholder & (real_so_far == 0)).sum()),
+    ('n_near_earnings_flags_changed_past_only', (ev['near_earnings'] != ev['near_earnings_past_only']).sum()),
+    ('n_episodes_near_earnings_flag_changed_past_only',
+     (ep2['near_earnings'] != ep2['near_earnings_past_only']).sum()),
+    # estimation window [-250,-30]: episodes (mixed left out) with other news of the stock inside it
+    ('n_episodes_est_window_has_earnings', ep2['est_has_earnings'].sum()),
+    ('n_episodes_est_window_has_other_rating_change', ep2['est_has_other_call'].sum()),
+    ('n_episodes_est_window_has_either', either.sum()),
+    ('n_clean_episodes_est_window_has_earnings', clean['est_has_earnings'].sum()),
+    ('n_clean_episodes_est_window_has_other_rating_change', clean['est_has_other_call'].sum()),
+    ('n_clean_episodes_est_window_has_either', either_clean.sum()),
+    ('n_episodes_dropped_cleaned_estimation_window', ep2['car_m1_p1_cleanest'].isna().sum()),
+    # broker leaderboard (unit = rating change): calls on mixed days and on multi-broker days
+    ('n_calls_on_mixed_days', on_mixed_day.sum()),
+    ('n_calls_no_earnings_leaderboard', len(ne_calls)),
+    ('n_calls_on_mixed_days_no_earnings_leaderboard', on_mixed_day[ne_calls.index].sum()),
+    ('n_calls_on_multi_broker_days_no_earnings_leaderboard', (ne_calls['n_same_day_calls'] > 1).sum()),
 ]
 pd.DataFrame(summary, columns=['metric', 'value']).to_csv(TABLES / 'sample_summary.csv', index=False)
 print(pd.DataFrame(summary, columns=['metric', 'value']).to_string(index=False))

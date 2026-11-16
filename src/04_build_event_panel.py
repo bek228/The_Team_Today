@@ -12,17 +12,26 @@ Outputs:
                                      earnings_in_window (any earnings day 0 in t = -20..+20) and
                                      resid_sd (estimation-window residual sd, for standardized CARs) and
                                      other_call_in_window (another call on the stock 1-2 trading days away)
+                                     Robustness columns (added at the end, used by 05_results.py):
+                                     other_call_before (another call 1-2 trading days BEFORE),
+                                     near_earnings_past_only (earnings timing from earlier reports only),
+                                     est_has_other_call / est_has_earnings (another rating day 0 /
+                                     an earnings day 0 inside the estimation window [-250,-30]),
+                                     car_m1_p1_cleanest (CAR[-1,+1] with the market model estimated
+                                     without earnings and rating-change days; empty if not estimable)
   data/processed/episodes.csv        one row per ticker x day 0: several brokers moving the same
-                                     stock on the same day are ONE price reaction
+                                     stock on the same day are ONE price reaction (same columns)
   data/processed/dropped_events.csv  rating changes not used, and why
   data/processed/earnings_day0.csv   earnings announcements with their day 0
   data/processed/events_day0_next.csv  the same events under the teammates' day-0 rule
                                      (during-market calls -> next day), for robustness only
+  data/processed/events_eastern.csv  the same events if Yahoo's raw time stamp is read as Eastern
+                                     time instead of UTC, for robustness only
 """
 import numpy as np
 import pandas as pd
 from _common import (PROC, MKT, EST_WINDOW, EVENT_WINDOW, MIN_EST_DAYS, EARNINGS_WINDOW, WINDOWS,
-                     find_day0)
+                     find_day0, timing_label)
 
 rat = pd.read_csv(PROC / 'ratings.csv', parse_dates=['announce_date'])
 ea = pd.read_csv(PROC / 'earnings.csv', parse_dates=['announce_date'])
@@ -33,14 +42,20 @@ N_DAYS = EVENT_WINDOW[1] - EVENT_WINDOW[0] + 1
 # ---- earnings day 0, same rule; keep only announcements inside the price calendar ----
 ea = ea[(ea['announce_date'] >= tdays[0]) & (ea['announce_date'] <= tdays[-1])].copy()
 ea['p0'] = [find_day0(tdays, d, tm) for d, tm in zip(ea['announce_date'], ea['timing'])]
+# robustness: earnings day 0 when placeholder times are filled from EARLIER announcements only
+ea['p0_past'] = [find_day0(tdays, d, tm) for d, tm in zip(ea['announce_date'], ea['timing_past_only'])]
+ea_pos_past = ea[ea['p0_past'] < len(tdays)].groupby('ticker')['p0_past'].apply(np.array).to_dict()
 ea = ea[ea['p0'] < len(tdays)].copy()   # an after-close report on the last price day has no day 0 yet
 ea['day0'] = tdays[ea['p0']]
 ea_pos = ea.groupby('ticker')['p0'].apply(np.array).to_dict()
 
 
-def nearest_earnings(ticker, p0):
-    """Signed trading days from the nearest earnings day 0 (positive = rating AFTER earnings)."""
-    pos = ea_pos.get(ticker)
+def nearest_earnings(positions, ticker, p0):
+    """Signed trading days from the nearest earnings day 0 (positive = rating AFTER earnings).
+
+    positions: dict ticker -> earnings day-0 positions (ea_pos, or ea_pos_past for robustness).
+    """
+    pos = positions.get(ticker)
     if pos is None:                     # firm has no earnings dates at all
         return np.nan
     gaps = p0 - pos                     # one gap per earnings date of this firm
@@ -57,8 +72,20 @@ def earnings_in_event_window(ticker, p0):
     return bool((np.abs(p0 - pos) <= EVENT_WINDOW[1]).any())
 
 
-def build(rat, during):
-    """Day 0, alpha, beta and the 41-day AR/CAR window for every rating change."""
+def in_estimation_window(positions, p0):
+    """True if any of these calendar positions lies in the estimation window t = -250..-30 of p0."""
+    if positions is None:
+        return False
+    t = positions - p0                  # event time of each position
+    return bool(((t >= EST_WINDOW[0]) & (t <= EST_WINDOW[1])).any())
+
+
+def build(rat, during, skip_days=None):
+    """Day 0, alpha, beta and the 41-day AR/CAR window for every rating change.
+
+    skip_days (robustness only): dict ticker -> calendar positions that are left out of the
+    estimation window before alpha and beta are estimated.
+    """
     rows, panels = [], []
     for e in rat.itertuples():
         p0 = find_day0(tdays, e.announce_date, e.timing, during)
@@ -73,7 +100,11 @@ def build(rat, during):
             rows.append(info)
             continue
 
-        est = rets.iloc[p0 + EST_WINDOW[0]: p0 + EST_WINDOW[1] + 1][[e.ticker, MKT]].dropna()
+        est = rets.iloc[p0 + EST_WINDOW[0]: p0 + EST_WINDOW[1] + 1][[e.ticker, MKT]]
+        if skip_days is not None:       # drop the listed days from the estimation window
+            est_pos = np.arange(p0 + EST_WINDOW[0], p0 + EST_WINDOW[1] + 1)
+            est = est[~np.isin(est_pos, skip_days.get(e.ticker, []))]
+        est = est.dropna()
         if len(est) < MIN_EST_DAYS:
             info['dropped'] = 'short estimation window'
             rows.append(info)
@@ -99,10 +130,14 @@ def build(rat, during):
         # ddof=2 because two numbers (alpha and beta) were estimated from the same data
         resid = est[e.ticker] - (alpha + beta * est[MKT])
 
-        dfe = nearest_earnings(e.ticker, p0)
+        dfe = nearest_earnings(ea_pos, e.ticker, p0)
         near = pd.notna(dfe) and EARNINGS_WINDOW[0] <= dfe <= EARNINGS_WINDOW[1]
         info.update(alpha=alpha, beta=beta, est_days=len(est), days_from_earnings=dfe,
                     near_earnings=bool(near), ar_0=win.loc[win['t'] == 0, 'AR'].item())
+        # the same flag with earnings day 0 from timing_past_only (robustness)
+        dfe_past = nearest_earnings(ea_pos_past, e.ticker, p0)
+        info['near_earnings_past_only'] = bool(pd.notna(dfe_past)
+                                               and EARNINGS_WINDOW[0] <= dfe_past <= EARNINGS_WINDOW[1])
         for name, (lo, hi) in WINDOWS.items():
             col = {'[-20,-2]': 'car_m20_m2', '[-1,+1]': 'car_m1_p1', '[+2,+20]': 'car_p2_p20'}[name]
             info[col] = win.loc[win['t'].between(lo, hi), 'AR'].sum()
@@ -127,21 +162,50 @@ ev['n_same_day_calls'] = ev.groupby(['ticker', 'day0'])['event_id'].transform('s
 
 # other_call_in_window: another rating change on the SAME stock has its day 0 one or two trading
 # days away, so the two [-1,+1] windows overlap and the CARs mix two pieces of news
-ev['p0'] = tdays.get_indexer(ev['day0'])                      # day 0 as a position in the calendar
-day0s_of = ev.groupby('ticker')['p0'].apply(np.unique).to_dict()   # every distinct day 0 per stock
+# other_call_before: the same, but only a call one or two trading days BEFORE this one counts
+# (known by day 0; other_call_in_window also looks one or two days ahead)
+def add_other_call_flags(df):
+    """Adds p0, other_call_in_window and other_call_before to df; returns every day 0 per stock."""
+    df['p0'] = tdays.get_indexer(df['day0'])                      # day 0 as a position in the calendar
+    day0s_of = df.groupby('ticker')['p0'].apply(np.unique).to_dict()   # every distinct day 0 per stock
+    nearby, before = [], []
+    for t, p in zip(df['ticker'], df['p0']):
+        gaps = p - day0s_of[t]                # gap 0 is this episode itself; positive = the other call came first
+        nearby.append(bool(((np.abs(gaps) >= 1) & (np.abs(gaps) <= 2)).any()))
+        before.append(bool(((gaps >= 1) & (gaps <= 2)).any()))
+    df['other_call_in_window'] = nearby
+    df['other_call_before'] = before
+    return day0s_of
 
 
-def other_call_nearby(ticker, p0):
-    gaps = np.abs(day0s_of[ticker] - p0)      # gap 0 is this episode itself
-    return bool(((gaps >= 1) & (gaps <= 2)).any())
+day0s_of = add_other_call_flags(ev)
 
+# ---- the estimation window [-250,-30]: does it contain other news on the same stock? ----
+ev['est_has_other_call'] = [in_estimation_window(day0s_of[t], p) for t, p in zip(ev['ticker'], ev['p0'])]
+ev['est_has_earnings'] = [in_estimation_window(ea_pos.get(t), p) for t, p in zip(ev['ticker'], ev['p0'])]
 
-ev['other_call_in_window'] = [other_call_nearby(t, p) for t, p in zip(ev['ticker'], ev['p0'])]
+# robustness: estimate the market model again without those days. For each stock, list every
+# trading day within [-1,+1] of an earnings day 0 or of a rating-change day 0, and leave these
+# days out of the estimation window. An event with fewer than MIN_EST_DAYS returns left is
+# dropped from this version only (car_m1_p1_cleanest stays empty).
+skip_days = {}
+for t in day0s_of:
+    news = np.concatenate([day0s_of[t], ea_pos.get(t, np.array([], dtype=int))])
+    skip_days[t] = np.unique(np.concatenate([news - 1, news, news + 1]))
+ev_cleanest, _ = build(rat, during='same_day', skip_days=skip_days)
+ev_cleanest = ev_cleanest[ev_cleanest['dropped'] == '']
+ev['car_m1_p1_cleanest'] = ev['event_id'].map(ev_cleanest.set_index('event_id')['car_m1_p1'])
+print('market model without earnings and rating-change days: estimation days per event',
+      ev_cleanest['est_days'].describe().round(1).to_dict(),
+      '| events that could not be estimated:', int(ev['car_m1_p1_cleanest'].isna().sum()))
 
 cols = ['event_id', 'ticker', 'broker', 'broker_raw', 'grade_datetime_et', 'announce_date', 'timing',
         'day0', 'direction', 'from_grade', 'to_grade', 'near_earnings', 'days_from_earnings',
         'n_same_day_calls', 'alpha', 'beta', 'est_days', 'ar_0', 'car_m1_p1', 'car_m20_m2', 'car_p2_p20',
-        'car_m1_p1_mktadj', 'car_0_p1', 'earnings_in_window', 'resid_sd', 'other_call_in_window']
+        'car_m1_p1_mktadj', 'car_0_p1', 'earnings_in_window', 'resid_sd', 'other_call_in_window',
+        # robustness columns, added later; kept at the end so the columns above do not move
+        'other_call_before', 'near_earnings_past_only', 'est_has_other_call', 'est_has_earnings',
+        'car_m1_p1_cleanest']
 ev = ev[cols].sort_values(['day0', 'ticker', 'broker']).reset_index(drop=True)
 panel = panel[['event_id', 'ticker', 'date', 't', 'ret', 'mkt', 'expected', 'AR', 'CAR']]
 
@@ -152,7 +216,8 @@ def episode_direction(s):
 
 same = ['alpha', 'beta', 'near_earnings', 'days_from_earnings', 'ar_0', 'car_m1_p1', 'car_m20_m2',
         'car_p2_p20', 'car_m1_p1_mktadj', 'car_0_p1', 'earnings_in_window', 'resid_sd',
-        'other_call_in_window']
+        'other_call_in_window', 'other_call_before', 'near_earnings_past_only', 'est_has_other_call',
+        'est_has_earnings', 'car_m1_p1_cleanest']
 g = ev.groupby(['ticker', 'day0'])
 assert (g[same].nunique(dropna=False) == 1).all().all(), 'calls on one ticker-day should share one CAR'
 episodes = g.agg(direction=('direction', episode_direction), n_calls=('event_id', 'size'),
@@ -166,6 +231,21 @@ episodes.insert(0, 'episode_id', episodes['ticker'] + '_' + episodes['day0'].dt.
 ev_next, _ = build(rat, during='next_day')
 ev_next = ev_next[ev_next['dropped'] == ''][['event_id', 'ticker', 'direction', 'day0', 'near_earnings',
                                               'ar_0', 'car_m1_p1']]
+
+# ---- what if Yahoo's raw time stamp is Eastern time already (not UTC)? robustness only ----
+# grade_datetime_et is the raw stamp converted from UTC to Eastern. Converting it back to UTC
+# gives the raw clock time; here that clock time is taken to be Eastern, and the date, the
+# timing class, day 0 and the CAR are rebuilt from it. Same calls, same earnings days.
+raw_clock = pd.to_datetime(rat['grade_datetime_et'], utc=True).dt.tz_localize(None)
+rat_eastern = rat.copy()
+rat_eastern['announce_date'] = raw_clock.dt.normalize()
+rat_eastern['timing'] = timing_label(raw_clock)
+ev_eastern, _ = build(rat_eastern, during='same_day')
+ev_eastern = ev_eastern[ev_eastern['dropped'] == ''].copy()
+add_other_call_flags(ev_eastern)
+ev_eastern = ev_eastern[['event_id', 'ticker', 'direction', 'day0', 'near_earnings', 'other_call_in_window',
+                         'car_m1_p1']]
+print('timestamps read as Eastern: kept', len(ev_eastern), 'of', len(rat), 'rating changes')
 
 # checks
 assert ev['event_id'].is_unique and episodes['episode_id'].is_unique
@@ -200,3 +280,4 @@ dropped[['event_id', 'ticker', 'broker', 'announce_date', 'timing', 'direction',
 ea[['ticker', 'announce_time', 'announce_date', 'timing', 'timing_raw', 'day0']].to_csv(
     PROC / 'earnings_day0.csv', index=False)
 ev_next.to_csv(PROC / 'events_day0_next.csv', index=False, float_format=f)
+ev_eastern.to_csv(PROC / 'events_eastern.csv', index=False, float_format=f)

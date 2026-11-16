@@ -17,3 +17,21 @@ unit = rating change (not episode),downgrade,696,-3.5826,0.2992,-11.9728
 "clean (headline): no earnings in [-1,+2], no other call within 2 days",downgrade,419,-1.2899,0.1688,-7.6435
 SE clustered by day0,upgrade,794,2.3922,0.1858,12.8763
 SE clustered by day0,downgrade,628,-2.4171,0.2425,-9.9679
+"clean (headline), SE clustered by day0",upgrade,582,1.7372,0.1825,9.5208
+"clean (headline), SE clustered by day0",downgrade,419,-1.2899,0.1804,-7.1515
+"clean (headline), SE clustered two-way by stock and day0",upgrade,582,1.7372,0.2125,8.1729
+"clean (headline), SE clustered two-way by stock and day0",downgrade,419,-1.2899,0.1863,-6.9257
+timestamps read as Eastern (not UTC): all episodes,upgrade,795,2.3999,0.178,13.4859
+timestamps read as Eastern (not UTC): all episodes,downgrade,625,-2.379,0.22,-10.8129
+timestamps read as Eastern (not UTC): clean,upgrade,587,1.7531,0.1691,10.3669
+timestamps read as Eastern (not UTC): clean,downgrade,421,-1.3407,0.169,-7.9326
+"clean, backward-looking filter: earnings day 0 at t = -2..0, other call at t = -2..-1",upgrade,617,1.8149,0.1709,10.6169
+"clean, backward-looking filter: earnings day 0 at t = -2..0, other call at t = -2..-1",downgrade,459,-1.3492,0.1662,-8.118
+"clean, earnings timing placeholders from earlier announcements only",upgrade,582,1.7372,0.1712,10.1443
+"clean, earnings timing placeholders from earlier announcements only",downgrade,419,-1.2899,0.1688,-7.6435
+"clean, no other rating change in the estimation window",upgrade,54,1.7354,0.6094,2.8475
+"clean, no other rating change in the estimation window",downgrade,27,-1.5317,0.5783,-2.6489
+"clean, no earnings day and no other rating change in the estimation window",upgrade,0,,,
+"clean, no earnings day and no other rating change in the estimation window",downgrade,0,,,
+"clean, market model estimated without earnings and rating-change days",upgrade,582,1.767,0.171,10.3314
+"clean, market model estimated without earnings and rating-change days",downgrade,419,-1.3008,0.1687,-7.7105
