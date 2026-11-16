@@ -169,7 +169,8 @@ The_Team_Today/
 │   └── processed/              # everything rebuilt by run_all.py
 ├── outputs/tables/, outputs/figures/
 ├── docs/                       # hand_checks.md, dashboard_mockup.png (AI-generated mockup, not a result)
-├── dashboard/app.py            # Streamlit dashboard
+├── dashboard/                  # Streamlit dashboard: app.py (entry point), ui_*.py, tests/test_app.py
+├── .streamlit/config.toml      # dashboard colours
 ├── audits/                     # self-audit
 └── dev/                        # HW8 prototype (pipeline.py, HW8_Data.ipynb) and its data/outputs, kept for the record
 ```
@@ -215,6 +216,9 @@ To launch the interactive dashboard locally:
 ```bash
 streamlit run dashboard/app.py
 ```
+
+The dashboard only reads the committed files in `outputs/tables/`, `data/processed/` and `data/raw/universe.csv`.
+It downloads nothing and does not rerun the study. To test every page: `python dashboard/tests/test_app.py`.
 
 The live dashboard is also available here:
 
