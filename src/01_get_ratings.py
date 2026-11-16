@@ -6,7 +6,8 @@ Timestamps. Yahoo's GradeDate comes without a time zone. Read as UTC and convert
 the clock times look like real publication times, not placeholders: in the committed snapshot
 (rating changes, 2021-01-01 to 2026-10-09) almost none sit at midnight or on a round hour, and
 most fall between 04:00 and 10:00 Eastern, when brokers send out their morning notes. (The table
-printed below, saved to outputs/tables/rating_time_of_day.csv, shows the shares.) Read as Eastern
+printed below, saved to outputs/tables/rating_time_of_day.csv, shows the shares; it is built on
+the final rows, after de-duplication.) Read as Eastern
 instead, the peak would be at 10:00-14:00, which does not fit how brokers publish. So: UTC.
 
 Day-0 rule (applied in 04_build_event_panel.py with _common.find_day0), using the Eastern time:
@@ -17,7 +18,8 @@ The teammates' prototype pushed during-market calls to the NEXT day. That would 
 reaction on t=-1. It is kept as a logged sensitivity (robustness.csv, specs_tried.md).
 
 Broker names are unified with data/raw/broker_aliases.csv (built by reading every distinct raw
-name; e.g. 'Cowen & Co.' and 'TD Cowen' are one broker). After that, one broker can show the same
+name; e.g. 'Cowen & Co.' and 'TD Cowen' are one broker). A raw name that is not in that file
+stops the run with an error. After unifying, one broker can show the same
 call twice on one day (once under each old name). Those exact repeats are dropped and logged.
 
 Outputs: data/raw/ratings/<TICKER>.csv (as downloaded), data/processed/ratings.csv (clean),
@@ -76,25 +78,14 @@ r['announce_date'] = r['grade_datetime_et'].dt.tz_localize(None).dt.normalize()
 r = r[(r['announce_date'] >= SAMPLE_START) & (r['announce_date'] <= SAMPLE_END)].copy()
 r['timing'] = timing_label(r['grade_datetime_et'])
 
-# the clock-time check that decides the day-0 rule (see docstring)
-et = r['grade_datetime_et']
-hours = et.dt.hour.value_counts().sort_index().rename_axis('hour_et').reset_index(name='n')
-hours['share'] = (hours['n'] / hours['n'].sum()).round(4)
-hours.to_csv(TABLES / 'rating_time_of_day.csv', index=False)
-print('\nrating changes by hour of day (US/Eastern):')
-print(hours.to_string(index=False))
-print('share exactly at hh:00:00:', round((et.dt.strftime('%M:%S') == '00:00').mean(), 4),
-      '| share at 00:00:00:', round((et.dt.strftime('%H:%M:%S') == '00:00:00').mean(), 4))
-print('most common clock times:', et.dt.strftime('%H:%M:%S').value_counts().head(5).to_dict())
-print('timing:', r['timing'].value_counts().to_dict())
-
 # ---- broker names ----
 aliases = load_broker_aliases()
 r['broker_raw'] = r['broker_raw'].astype(str).str.strip()
 unmapped = sorted(set(r['broker_raw']) - set(aliases))
-if unmapped:
-    print('WARNING: broker names not in broker_aliases.csv (kept as they are):', unmapped)
-r['broker'] = r['broker_raw'].map(aliases).fillna(r['broker_raw'])
+if unmapped:  # a name we have never looked at: stop, never guess which broker it is
+    raise SystemExit(f'ERROR: broker names not in data/raw/broker_aliases.csv: {unmapped}. '
+                     f'Add a row for each of them to data/raw/broker_aliases.csv and rerun.')
+r['broker'] = r['broker_raw'].map(aliases)
 print('distinct raw broker names:', r['broker_raw'].nunique(), '-> brokers:', r['broker'].nunique())
 
 # ---- de-duplication, logged (two simple steps) ----
@@ -115,6 +106,19 @@ log = pd.concat([repeats.assign(reason='same broker, ticker, day and direction a
                  contradictory.assign(reason='same broker upgraded and downgraded on one day')])
 log.to_csv(PROC / 'ratings_duplicates_dropped.csv', index=False)
 print(f'\nde-duplication: {n0} -> {len(r)} rows ({len(repeats)} repeats, {len(contradictory)} contradictory)')
+
+# ---- the clock-time check that decides the day-0 rule (see docstring), on the final rows ----
+et = r['grade_datetime_et']
+hours = et.dt.hour.value_counts().sort_index().rename_axis('hour_et').reset_index(name='n')
+assert hours['n'].sum() == len(r), 'the hour table does not count every final row'
+hours['share'] = (hours['n'] / hours['n'].sum()).round(4)
+hours.to_csv(TABLES / 'rating_time_of_day.csv', index=False)
+print('\nrating changes by hour of day (US/Eastern):')
+print(hours.to_string(index=False))
+print('share exactly at hh:00:00:', round((et.dt.strftime('%M:%S') == '00:00').mean(), 4),
+      '| share at 00:00:00:', round((et.dt.strftime('%H:%M:%S') == '00:00:00').mean(), 4))
+print('most common clock times:', et.dt.strftime('%H:%M:%S').value_counts().head(5).to_dict())
+print('timing:', r['timing'].value_counts().to_dict())
 
 r['event_id'] = (r['ticker'] + '_' + r['announce_date'].dt.strftime('%Y%m%d') + '_'
                  + r['broker'].str.replace(r'[^A-Za-z0-9]+', '', regex=True))
