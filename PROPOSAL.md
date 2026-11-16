@@ -34,7 +34,7 @@ We will use SPY as our market benchmark so that we can distinguish movements in 
 Our main dataset will consist of individual analyst rating changes. Each observation will include:
 
 - Company ticker
-- Analyst and brokerage firm
+- Brokerage firm (Yahoo Finance does not report the individual analyst)
 - Previous and new recommendation
 - Whether the recommendation was an upgrade or downgrade
 - Date and time of the recommendation
@@ -91,12 +91,13 @@ We also want to distinguish between a stock moving after a recommendation and an
 
 We plan to present our results through an interactive dashboard.
 
-The dashboard will have four main sections:
+The dashboard will have five main sections:
 
 1. **Introduction:** Overview of the research question and companies included.
 2. **Methodology:** Explanation of the data and how we calculate returns around analyst recommendations.
 3. **Results:** Comparisons of upgrades and downgrades, including average abnormal returns and cumulative abnormal returns.
-4. **Explore:** Ability to filter results by company, recommendation type, and brokerage firm.
+4. **Broker leaderboard:** Brokerage firms ranked by the average price reaction to their calls.
+5. **Explore:** Ability to filter results by company, recommendation type, and brokerage firm.
 
 We would also like to include:
 
