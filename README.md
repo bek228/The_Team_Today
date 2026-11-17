@@ -114,7 +114,7 @@ every row is in `outputs/tables/robustness.csv`, CAR[-1,+1], upgrades / downgrad
 | clean filter using only what is known by day 0 | +1.81% (t = 10.6, n = 617) | -1.35% (t = -8.1, n = 459) |
 | earnings timing placeholders from earlier announcements only | +1.74% (t = 10.1, n = 582) | -1.29% (t = -7.6, n = 419) |
 | market model estimated without earnings and rating-change days | +1.77% (t = 10.3, n = 582) | -1.30% (t = -7.7, n = 419) |
-| only episodes with no other rating change in the estimation window | +1.74% (t = 2.8, n = 54) | -1.53% (t = -2.6, n = 27) |
+| only episodes with no other in-sample (2021+) rating change in the estimation window | +1.74% (t = 2.8, n = 54) | -1.53% (t = -2.6, n = 27) |
 
 Clustering makes the t-statistics smaller (two-way: 8.2 and -6.9 instead of 10.1 and -7.6), so the
 plain t-statistics overstate the precision; the means do not change and stay far from zero. If the
@@ -124,7 +124,11 @@ earnings-timing row equals the headline because no near-earnings flag changes
 (`n_near_earnings_flags_changed_past_only` = 0; only 12 earnings times are placeholders). Every
 episode has an earnings day in its estimation window and 1,300 of the 1,422 have another rating
 change there (`n_episodes_est_window_has_*`), so dropping all of them leaves no episodes (that row
-is in the file with n = 0); the last row above keeps only 81 episodes and is much noisier.
+is in the file with n = 0); the last row above keeps only 81 episodes and is much noisier. Rating
+changes before 2021 are not in the data, so the 1,300 is a lower bound, 2021 episodes pass the last
+row's filter by construction (58 of its 81 episodes are from 2021,
+`n_clean_episodes_no_est_window_rating_change_from_2021`), and the market-model row removes
+only in-sample rating-change days.
 
 **Earnings and direction in one regression** (`earnings_regression.csv`, 1,422 non-mixed episodes,
 standard errors clustered by stock, 49 clusters). In the signed-CAR version (reaction in the direction
@@ -240,7 +244,9 @@ the hosted dashboard's Python version is whatever is set in Streamlit Cloud.
 numbers exactly (checked in a fresh virtual environment, file by file: every CSV in `data/processed/`
 and `outputs/tables/` is byte-identical). The three PNG figures are not: a different machine redraws
 them with different bytes (font rendering), with the same numbers behind them. `python run_all.py --refresh`
-re-downloads everything (about 10 minutes) and records each pull in `data/raw/MANIFEST.csv`; the
+re-downloads everything (about 10 minutes) and records each pull in `data/raw/MANIFEST.csv`. It is
+not all-or-nothing: if one ticker's rating or earnings download fails, that ticker's previously
+cached file is kept (the pull dates in `MANIFEST.csv` show which files are old). The
 numbers will then move, because Yahoo revises its data and drops old rating rows. Each script can
 also be run alone from the repo root, in order, e.g. `python src/04_build_event_panel.py`.
 
@@ -344,10 +350,12 @@ https://theteamtoday-8gqhfahmohefpa7weqnw9k.streamlit.app/
   filled with each firm's usual timing over the whole sample; using earlier announcements only
   changes no near-earnings flag (`n_near_earnings_flags_changed_past_only` in `sample_summary.csv`).
 - **The estimation window is not cleaned.** Days [-250,-30] contain earlier earnings days for every
-  episode and earlier rating changes of the same stock for 1,300 of 1,422 episodes
-  (`n_episodes_est_window_has_*` in `sample_summary.csv`); they feed alpha, beta and the residual
-  sd. Estimating the market model without those days gives +1.77% / -1.30% for the clean sample
-  (`robustness.csv`), so the headline does not depend on it.
+  episode and earlier rating changes of the same stock for at least 1,300 of 1,422 episodes
+  (`n_episodes_est_window_has_*` in `sample_summary.csv`; rating changes before 2021 are not in the
+  data, so for 2021 episodes they cannot be counted or removed); they feed alpha, beta and the
+  residual sd. Estimating the market model without those days (earnings days, and rating-change days
+  from 2021 on) gives +1.77% / -1.30% for the clean sample (`robustness.csv`), so the headline does
+  not depend on them, as far as we can measure.
 - **Current-vintage vendor data.** The sample is whatever Yahoo held on the pull date. Yahoo revises
   its data and drops old rating rows, so a new pull gives different numbers, and we cannot see what
   an investor would have seen at the time.

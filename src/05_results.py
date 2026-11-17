@@ -505,6 +505,11 @@ summary = [
     ('n_calls_no_earnings_leaderboard', len(ne_calls)),
     ('n_calls_on_mixed_days_no_earnings_leaderboard', on_mixed_day[ne_calls.index].sum()),
     ('n_calls_on_multi_broker_days_no_earnings_leaderboard', (ne_calls['n_same_day_calls'] > 1).sum()),
+    # rating changes before 2021 are not in the data, so a 2021 episode never shows another rating
+    # change in its estimation window: how many of the clean episodes without one are from 2021?
+    ('n_clean_episodes_no_est_window_rating_change', (~clean['est_has_other_call']).sum()),
+    ('n_clean_episodes_no_est_window_rating_change_from_2021',
+     (~clean['est_has_other_call'] & (clean['day0'].dt.year == 2021)).sum()),
 ]
 pd.DataFrame(summary, columns=['metric', 'value']).to_csv(TABLES / 'sample_summary.csv', index=False)
 print(pd.DataFrame(summary, columns=['metric', 'value']).to_string(index=False))

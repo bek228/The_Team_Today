@@ -11,13 +11,13 @@ The headline did not move: clean upgrades +1.7372 (n 582), clean downgrades -1.2
 |---|---|---|
 | S1 | Major | Disclosed (wording fixed; the bias is not measured) |
 | S2 | Major | Disclosed, with a new robustness row (timestamps still not verified) |
-| S3 | Major | Fixed (new rows; they weaken the t-statistics) |
+| S3 | Major | Fixed for the headline (new rows; they weaken the t-statistics). Leaderboard and regression not done, disclosed |
 | S4 | Minor | Fixed |
 | S5 | Minor | Fixed (new row) and disclosed |
 | S6 | Minor | Fixed (counted: no flag changes) |
-| S7 | Minor | Fixed (counted; new rows) |
+| S7 | Minor | Fixed (counted; new rows), within the data: rating changes before 2021 are not in it |
 | S8 | Minor | Fixed (wording and counts) |
-| S9 | Minor | (b) Fixed. (a), (c), (d) Not done, disclosed |
+| S9 | Minor | (b) Fixed. (a), (c) Not done, disclosed. (d) Disclosed |
 | S10 | Minor | Fixed |
 | S11 | Minor | Fixed |
 
@@ -42,7 +42,7 @@ The headline did not move: clean upgrades +1.7372 (n 582), clean downgrades -1.2
   all episodes +2.3999 (t 13.5, n 795) / -2.3790 (t -10.8, n 625);
   clean +1.7531 (t 10.4, n 587) / -1.3407 (t -7.9, n 421).
 - Day 0 moves for 156 of the 1,548 rating changes (`n_rating_changes_day0_moves_if_eastern`).
-- The headline does not depend on the time zone.
+- The headline does not depend on the time zone; the day-by-day timing (README, t = -1 move) does.
 - Not done: no timestamp was checked against a broker note or another vendor. The README now says
   that UTC is an assumption and that the clock-time argument is circular.
 
@@ -99,15 +99,21 @@ The headline did not move: clean upgrades +1.7372 (n 582), clean downgrades -1.2
 
 - Counts, non-mixed episodes (`sample_summary.csv`): an earnings day in the estimation window:
   1,422 of 1,422. Another rating change of the stock: 1,300. Clean episodes: 1,001 of 1,001 and 920.
+- Limit: rating changes before 2021-01-01 are not in the data, so the estimation windows of 2021
+  episodes (which lie in 2020) can never show "another rating change". The 1,300 and 920 are lower
+  bounds, and the rows below handle in-sample (2021 or later) rating changes only.
 - Rerun without them (`robustness.csv`):
   - no earnings day and no other rating change: n = 0 for both directions. This cannot be run,
     because every episode has an earnings day in its window. The empty row is kept in the file.
   - no other rating change: +1.7354 (t 2.8, n 54) / -1.5317 (t -2.6, n 27). The means are close to
-    the headline, but with so few episodes the t-statistics are much smaller.
+    the headline, but with so few episodes the t-statistics are much smaller. 58 of these 81
+    episodes are from 2021, which pass this filter by construction (see the limit above;
+    `n_clean_episodes_no_est_window_rating_change`, `..._from_2021` in `sample_summary.csv`).
 - Because dropping episodes does not work, we added one more row: the market model is estimated
   after removing every day within [-1,+1] of an earnings day 0 or another rating-change day 0 from
   the estimation window. Result: +1.7670 (t 10.3, n 582) / -1.3008 (t -7.7, n 419). No episode is lost
-  (`n_episodes_dropped_cleaned_estimation_window` = 0). The headline does not depend on this.
+  (`n_episodes_dropped_cleaned_estimation_window` = 0). The headline does not depend on this, as far
+  as the data can show (2020 rating-change days stay in the window for 2021 episodes).
 
 ## S8. Rank-1 broker numbers could be read as a finding
 
@@ -125,12 +131,14 @@ The headline did not move: clean upgrades +1.7372 (n 582), clean downgrades -1.2
 - **(b) Fixed.** File: `src/01_get_ratings.py`. A raw broker name that is not in
   `data/raw/broker_aliases.csv` now stops the run with an error that names it. Tested by removing
   one row from a copy: the run stopped with "ERROR: broker names not in data/raw/broker_aliases.csv:
-  ['TD Cowen'] ...". All 105 raw names in the sample are covered today.
+  ['TD Cowen'] ...". All 105 raw names in the sample before de-duplication (a count printed by
+  `01_get_ratings.py`, not stored in `outputs/tables/`) are covered today.
 - **(a) Not done, on purpose.** The README results block is still rewritten in place by
   `src/05_results.py`. It is written from the tables so the README numbers are never typed by hand,
   and a rerun on the committed data leaves the file unchanged (checked: two runs, no diff).
-- **(c) Not done.** `--refresh` is still not all-or-nothing. A failed ticker keeps its old file and
-  `MANIFEST.csv` records the pull dates. We did not run `--refresh` for this response.
+- **(c) Not done, disclosed.** `--refresh` is still not all-or-nothing. A failed ticker keeps its old
+  file and `MANIFEST.csv` records the pull dates; the README "How to run" section now says so. We did
+  not run `--refresh` for this response.
 - **(d) Disclosed.** `data/processed/` is committed because the dashboard reads it. The README
   repository tree now says so.
 - Checked for this response: `python run_all.py` twice on Python 3.13 on a second machine. Both

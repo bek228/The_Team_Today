@@ -69,9 +69,9 @@ mean +- 1.96 SE. Near earnings = rating day 0 within [-1,+2] trading days of an 
 | F28 | Yahoo timestamps read as U.S. Eastern instead of UTC, clean episodes | +1.75 (10.4), n 587 / -1.34 (-7.9), n 421 | no | robustness |
 | F29 | clean sample using only what is known by day 0: drop if an earnings day 0 is at t = -2..0 or another call on the stock is at t = -2..-1 (nothing after day 0 is used) | +1.81 (10.6), n 617 / -1.35 (-8.1), n 459 | no | robustness |
 | F30 | clean sample with earnings timing placeholders filled from earlier announcements only | identical to F22: +1.74 (10.1), n 582 / -1.29 (-7.6), n 419 (no flag changes, see D7) | no | robustness |
-| F31 | clean episodes with no other rating change of the stock in the estimation window [-250,-30] | +1.74 (2.8), n 54 / -1.53 (-2.6), n 27. Few episodes, much noisier | no | robustness |
+| F31 | clean episodes with no other in-sample (2021 or later) rating change of the stock in the estimation window [-250,-30] | +1.74 (2.8), n 54 / -1.53 (-2.6), n 27. Few episodes, much noisier. Rating changes before 2021 are not in the data, so 2021 episodes pass this filter by construction: 58 of the 81 are from 2021 (sample_summary `n_clean_episodes_no_est_window_rating_change_from_2021`) | no | robustness |
 | F32 | clean episodes with no earnings day and no other rating change in the estimation window | n 0 / n 0: every episode has an earnings day in its estimation window, so this cannot be run (the empty row is kept) | no | robustness |
-| F33 | clean episodes, market model estimated after removing every day within [-1,+1] of an earnings day 0 or another rating-change day 0 of the stock from the estimation window | +1.77 (10.3), n 582 / -1.30 (-7.7), n 419 | no | robustness |
+| F33 | clean episodes, market model estimated after removing every day within [-1,+1] of an earnings day 0 or another rating-change day 0 of the stock from the estimation window | +1.77 (10.3), n 582 / -1.30 (-7.7), n 419. Only in-sample rating changes are removed: for 2021 episodes, rating changes in 2020 are not in the data and stay in the estimation window | no | robustness |
 
 Diagnostics (checked the data or explained a choice; not reported as results):
 
@@ -84,7 +84,7 @@ Diagnostics (checked the data or explained a choice; not reported as results):
 | D5 | the 10 largest abnormal returns at t = -1 among no-earnings episodes | e.g. +23.37 before SBUX_20240814_DeutscheBank, +23.12 before AMD_20251007_Jefferies: news can come before the call | largest_t_minus_1_moves_no_earnings |
 | D6 | rating changes whose day 0 moves if timestamps are read as Eastern | 156 of 1,548 | sample_summary (`n_rating_changes_day0_moves_if_eastern`) |
 | D7 | earnings timing placeholders, and near-earnings flags that change if placeholders use earlier announcements only | 12 placeholders; 0 timings change; 0 flags change (rating changes and episodes) | sample_summary (`n_earnings_timing_placeholders`, `n_earnings_timing_changed_past_only`, `n_near_earnings_flags_changed_past_only`) |
-| D8 | episodes whose estimation window contains an earnings day 0 or another rating change of the same stock | earnings: 1,422 of 1,422 non-mixed episodes (1,001 of 1,001 clean); other rating change: 1,300 (920 clean) | sample_summary (`n_episodes_est_window_has_*`, `n_clean_episodes_est_window_has_*`) |
+| D8 | episodes whose estimation window contains an earnings day 0 or another in-sample (2021 or later) rating change of the same stock | earnings: 1,422 of 1,422 non-mixed episodes (1,001 of 1,001 clean); other rating change: 1,300 (920 clean), a lower bound because rating changes before 2021 are not in the data; of the 81 clean episodes without one, 58 are from 2021 | sample_summary (`n_episodes_est_window_has_*`, `n_clean_episodes_est_window_has_*`, `n_clean_episodes_no_est_window_rating_change*`) |
 | D9 | leaderboard calls that come from mixed upgrade/downgrade days or multi-broker days | 37 calls on mixed days in all; in the no_earnings leaderboard (1,201 calls) 16 on mixed days and 69 on multi-broker days | sample_summary (`n_calls_on_mixed_days*`, `n_calls_on_multi_broker_days_no_earnings_leaderboard`) |
 
 ## What was NOT tried (so nobody has to wonder)
@@ -96,7 +96,8 @@ Diagnostics (checked the data or explained a choice; not reported as results):
   that the value has not changed since that commit and that the code has one value and no loop over
   thresholds. No other value was run.
 - No other earnings windows than [-1,+2] (and no +-1-session version of the clean sample), no other
-  "other call" window than 2 trading days, except the backward-looking version F29. No other
+  "other call" window than 2 trading days. The backward-looking version F29 is the one exception to
+  both (earnings day 0 at t = -2..0, other call at t = -2..-1). No other
   estimation or event windows than the HW6 defaults (F33 removes days from the estimation window but
   keeps [-250,-30]).
 - No check of Yahoo's timestamps against an outside source (broker notes, another vendor).
