@@ -229,14 +229,17 @@ pip install -r requirements.txt     # needs Python >= 3.12 (see below); a fresh 
 python run_all.py                   # 1-2 minutes; rebuilds data/processed/ and outputs/ from the committed raw snapshot
 ```
 
-**Python version.** The pipeline was run with Python 3.14.6. The minimum is Python 3.12, because
+**Python version.** The pipeline was run with Python 3.14.6 and, for `audits/05_self_audit_response.md`,
+with Python 3.13 on a second machine (same tables). The minimum is Python 3.12, because
 the pinned scipy 1.18.0 declares `Requires-Python >= 3.12` (pandas 3.0.3, numpy 2.4.6 and
-matplotlib 3.11.0 need >= 3.11); Python 3.12 and 3.13 were not actually tested. With an older Python
+matplotlib 3.11.0 need >= 3.11); Python 3.12 was not actually tested. With an older Python
 `pip install -r requirements.txt` fails. No `runtime.txt` or other Streamlit Cloud file is included;
 the hosted dashboard's Python version is whatever is set in Streamlit Cloud.
 
 `python run_all.py` uses the committed files in `data/raw/`, so it reproduces the committed
-numbers exactly (checked in a fresh virtual environment, file by file). `python run_all.py --refresh`
+numbers exactly (checked in a fresh virtual environment, file by file: every CSV in `data/processed/`
+and `outputs/tables/` is byte-identical). The three PNG figures are not: a different machine redraws
+them with different bytes (font rendering), with the same numbers behind them. `python run_all.py --refresh`
 re-downloads everything (about 10 minutes) and records each pull in `data/raw/MANIFEST.csv`; the
 numbers will then move, because Yahoo revises its data and drops old rating rows. Each script can
 also be run alone from the repo root, in order, e.g. `python src/04_build_event_panel.py`.

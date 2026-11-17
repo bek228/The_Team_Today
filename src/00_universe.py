@@ -1,4 +1,5 @@
-"""Step 0: pick 50 large firms using only information available on 2021-01-01 (no hindsight).
+"""Step 0: pick 50 large firms from 2020 membership and 2020 volume, among the firms Yahoo can still
+price today (a survivors-only universe; see README "Threats to validity").
 
 Method
   1. S&P 500 membership on 2021-01-01. The current Wikipedia page no longer has the
