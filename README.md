@@ -12,7 +12,7 @@ The sample is 50 large U.S. firms from January 2021 to October 2026. The earlier
 
 ## 2. Research Sample
 
-- **Companies:** 50 firms, chosen with information available on January 1, 2021: the S&P 500 members on December 31, 2020, ranked by average daily dollar trading volume during 2020, top 50 (one share class per firm). The list and the ranking metric are in `data/raw/universe.csv`; members that could not be priced on Yahoo today are listed in `data/raw/universe_dropped.csv`.
+- **Companies:** 50 firms: the S&P 500 members on December 31, 2020, ranked by average daily dollar trading volume during 2020, top 50 (one share class per firm). The membership list and the volume are from 2020, but only firms that Yahoo can still price today could be ranked, so this is a survivors-only universe, not a hindsight-free one. Well-known members that could not be ranked include Twitter, Activision Blizzard, Electronic Arts, Xilinx, Walgreens Boots Alliance, First Republic Bank and SVB Financial. The list and the ranking metric are in `data/raw/universe.csv`; the members that could not be ranked are listed in `data/raw/universe_dropped.csv` (see Threats to validity).
 - **Time period:** rating changes from January 1, 2021 through October 9, 2026 (fixed, so reruns do not drift). Prices run from October 2019 (for the estimation window) to November 13, 2026.
 - **Market benchmark:** SPDR S&P 500 ETF (SPY).
 - **Data source:** Yahoo Finance via `yfinance`, pulled once and committed as a snapshot (see Data provenance below). Yahoo's rating history has holes for a few firms (META, C, GE, BRK-B); see `outputs/tables/ratings_coverage_by_year.csv` and Threats to validity.
@@ -26,7 +26,7 @@ The design follows the class event-study recipe (HW6). Every setting is a named 
 Yahoo's rating history is filtered to explicit upgrades and downgrades. Initiations, reiterations and price-target changes are excluded. Yahoo reports the brokerage firm, not the individual analyst. Broker names are unified with `data/raw/broker_aliases.csv` (for example, "Cowen & Co." and "TD Cowen" are one broker).
 
 ### Event Timing
-Yahoo timestamps are read as UTC and converted to U.S. Eastern Time. Day 0 is the first trading day on which investors could trade on the news:
+Yahoo timestamps come without a time zone. We read them as UTC and convert to U.S. Eastern Time. This is an assumption, not a verified fact: the only evidence is that the clock times then look like broker publication times, and no timestamp was checked against an outside source. Reading them as Eastern instead is reported as a robustness check (`outputs/tables/robustness.csv`). Day 0 is the first trading day on which investors could trade on the news:
 
 - Before 9:30 a.m. ET: that trading day.
 - During market hours: that same trading day.
@@ -45,7 +45,7 @@ Expected returns come from a market model for each event:
 ### Earnings Announcements
 A rating change is flagged as "near earnings" when its day 0 falls from one trading day before to two trading days after the same firm's earnings day 0. The window leans forward because analysts usually re-rate just after a report. Results are shown for all events, events with no earnings nearby, and events near earnings.
 
-**Headline sample: clean episodes.** An episode is *clean* when (1) it is not near earnings (the [-1,+2] window above, which is wider than a plus-or-minus-one-session rule, so it removes slightly more), (2) no other rating change on the same stock has its day 0 within 2 trading days (`other_call_in_window`; otherwise the two [-1,+1] windows overlap), and (3) it is not a mixed upgrade/downgrade day. Do not confuse `clean` with `clean_window`: `clean_window` is a separate, stricter sample with no earnings day 0 anywhere in [-20,+20], used only to read the long windows CAR[-20,-2] and CAR[+2,+20]. Earnings-overlap episodes are reported separately by direction in `outputs/tables/earnings_comparison.csv`, and `outputs/tables/earnings_regression.csv` tests direction x earnings in one regression (CAR[-1,+1] on an upgrade dummy, a near-earnings dummy and their interaction, standard errors clustered by stock).
+**Headline sample: clean episodes.** An episode is *clean* when (1) it is not near earnings (the [-1,+2] window above, which is wider than a plus-or-minus-one-session rule, so it removes slightly more), (2) no other rating change on the same stock has its day 0 within 2 trading days (`other_call_in_window`; otherwise the two [-1,+1] windows overlap), and (3) it is not a mixed upgrade/downgrade day. The clean sample is an event-study control, not a tradable filter: rules (1) and (2) also look one to two trading days after day 0. A version that drops only on what is known by day 0 is in `outputs/tables/robustness.csv`. Do not confuse `clean` with `clean_window`: `clean_window` is a separate, stricter sample with no earnings day 0 anywhere in [-20,+20], used only to read the long windows CAR[-20,-2] and CAR[+2,+20]. Earnings-overlap episodes are reported separately by direction in `outputs/tables/earnings_comparison.csv`, and `outputs/tables/earnings_regression.csv` tests direction x earnings in one regression (CAR[-1,+1] on an upgrade dummy, a near-earnings dummy and their interaction, standard errors clustered by stock).
 
 ### Episodes
 Several brokers changing their rating on the same stock on the same day share one price reaction, so they are consolidated into a single episode for the upgrade-versus-downgrade results. Days with both an upgrade and a downgrade are labelled mixed and left out.
@@ -56,7 +56,7 @@ Each broker's average CAR[-1,+1] per rating change is reported with a 95% confid
 The **headline leaderboard uses only calls not near earnings** (`sample = no_earnings` in `outputs/tables/broker_leaderboard.csv`, and the figure `broker_leaderboard.png`). On all calls, brokers that often re-rate right after an earnings report get credit for the earnings move: across ranked brokers, |mean CAR| rises with the broker's share of near-earnings calls (correlation in `sample_summary.csv`, rows `corr_abs_mean_car_vs_share_near_earnings_*`; each broker's share is the column `share_near_earnings_pct`). The `all` and `single_call_days` samples are kept in the same file as robustness. A second robustness leaderboard divides each CAR by the stock's own 3-day noise (estimation-window residual sd x sqrt 3), so volatile stocks do not dominate (`broker_leaderboard_standardized.csv`); how much the ranks move is in `broker_rank_stability.csv`.
 
 ### Statistical Analysis
-Means are reported with standard errors, t-statistics and 95% intervals (mean ± 1.96 standard errors). Alternative specifications, including standard errors clustered by day, are in `outputs/tables/robustness.csv`, and every specification run is logged in `specs_tried.md`.
+Means are reported with standard errors, t-statistics and 95% intervals (mean ± 1.96 standard errors). The t-statistics in the results block treat episodes as independent. Alternative specifications are in `outputs/tables/robustness.csv`, including the clean headline with standard errors clustered by day 0 and two-way by stock and day 0 (reported below the results block), and every specification run is logged in `specs_tried.md`.
 
 ## 4. Results
 
@@ -102,6 +102,30 @@ Do all ranked brokers (n >= MIN_BROKER_CALLS) have the same mean CAR[-1,+1] per 
 | single_call_days | downgrade | 24 | 0.201 | 0.209 | 0.025 |
 <!-- RESULTS:END -->
 
+**Robustness of the clean headline** (added after the self-audit, `audits/05_self_audit_response.md`;
+every row is in `outputs/tables/robustness.csv`, CAR[-1,+1], upgrades / downgrades):
+
+| check | upgrades | downgrades |
+|---|---|---|
+| clean headline, plain standard errors | +1.74% (t = 10.1, n = 582) | -1.29% (t = -7.6, n = 419) |
+| same, standard errors clustered by day 0 | t = 9.5 | t = -7.2 |
+| same, clustered two-way by stock and day 0 | t = 8.2 | t = -6.9 |
+| timestamps read as Eastern, not UTC (clean) | +1.75% (t = 10.4, n = 587) | -1.34% (t = -7.9, n = 421) |
+| clean filter using only what is known by day 0 | +1.81% (t = 10.6, n = 617) | -1.35% (t = -8.1, n = 459) |
+| earnings timing placeholders from earlier announcements only | +1.74% (t = 10.1, n = 582) | -1.29% (t = -7.6, n = 419) |
+| market model estimated without earnings and rating-change days | +1.77% (t = 10.3, n = 582) | -1.30% (t = -7.7, n = 419) |
+| only episodes with no other rating change in the estimation window | +1.74% (t = 2.8, n = 54) | -1.53% (t = -2.6, n = 27) |
+
+Clustering makes the t-statistics smaller (two-way: 8.2 and -6.9 instead of 10.1 and -7.6), so the
+plain t-statistics overstate the precision; the means do not change and stay far from zero. If the
+timestamps are Eastern, day 0 moves for 156 of the 1,548 rating changes
+(`n_rating_changes_day0_moves_if_eastern` in `sample_summary.csv`), and the result barely moves. The
+earnings-timing row equals the headline because no near-earnings flag changes
+(`n_near_earnings_flags_changed_past_only` = 0; only 12 earnings times are placeholders). Every
+episode has an earnings day in its estimation window and 1,300 of the 1,422 have another rating
+change there (`n_episodes_est_window_has_*`), so dropping all of them leaves no episodes (that row
+is in the file with n = 0); the last row above keeps only 81 episodes and is much noisier.
+
 **Earnings and direction in one regression** (`earnings_regression.csv`, 1,422 non-mixed episodes,
 standard errors clustered by stock, 49 clusters). In the signed-CAR version (reaction in the direction
 of the call), a downgrade not near earnings moves the price by 1.36%; an upgrade not near earnings
@@ -109,11 +133,17 @@ moves it 0.53 percentage points more (p = 0.0535); being near earnings adds 5.20
 downgrades (p < 0.001), and that earnings boost is 2.32 points smaller for upgrades (interaction
 p = 0.0178). So earnings amplify downgrades more than upgrades.
 
-**Does the broker matter?** On the headline no-earnings leaderboard, rank 1 is JP Morgan for upgrades
-(+4.20%, n = 22) and B of A Securities for downgrades (-3.34%, n = 19) (`broker_leaderboard.csv`,
-`sample = no_earnings`, `rank = 1`). But the joint tests above say we cannot tell the brokers apart:
-**ANOVA and the permutation test agree that average reactions do not detectably differ across
-brokers** in any sample (every p-value above 0.1 in the table). Kruskal-Wallis is a different
+**Does the broker matter? The tests cannot tell brokers apart.** **ANOVA and the permutation test
+agree that average reactions do not detectably differ across brokers** in any sample (every p-value
+above 0.1 in the table above). So the ranks below are a description of this sample, not a finding:
+they are not distinguishable from noise. On the headline no-earnings leaderboard, rank 1 is JP Morgan
+for upgrades (+4.20%, n = 22) and B of A Securities for downgrades (-3.34%, n = 19)
+(`broker_leaderboard.csv`, `sample = no_earnings`, `rank = 1`). The leaderboard unit is the rating
+change, so it includes calls from days the headline leaves out or counts once: of the 1,201 calls in
+the no-earnings leaderboard, 16 come from mixed upgrade/downgrade days and 69 from multi-broker days,
+where calls share one CAR (`n_calls_on_mixed_days_no_earnings_leaderboard`,
+`n_calls_on_multi_broker_days_no_earnings_leaderboard` in `sample_summary.csv`; 37 calls in the whole
+sample are on mixed days). Kruskal-Wallis is a different
 question: it compares whole distributions (ranks), not means. Returns are heavy-tailed, and brokers
 differ in spread and skew (some cover volatile stocks, some call right after earnings), so
 Kruskal-Wallis can reject (it does at 5% for `all` upgrades and for both `single_call_days` lists)
@@ -153,7 +183,7 @@ The_Team_Today/
 ├── specs_tried.md              # every specification run, incl. the prototype's
 ├── src/
 │   ├── _common.py              # paths, sample window, event-study constants, day-0 rule, helpers
-│   ├── 00_universe.py          # S&P 500 on 2021-01-01 -> top 50 by 2020 dollar volume
+│   ├── 00_universe.py          # S&P 500 on 2021-01-01 -> top 50 by 2020 dollar volume (firms Yahoo still prices)
 │   ├── 01_get_ratings.py       # Yahoo upgrades/downgrades -> data/processed/ratings.csv
 │   ├── 02_get_earnings.py      # Yahoo earnings dates -> data/processed/earnings.csv
 │   ├── 03_get_returns.py       # one batched price download -> data/processed/returns.csv
@@ -166,7 +196,7 @@ The_Team_Today/
 │   │   ├── prices.csv, sp500_members_2020-12-31.csv, sp500_members_current.csv, dollar_volume_2020.csv
 │   │   ├── universe.csv, universe_dropped.csv   # derived by 00_universe.py from the three files above
 │   │   └── broker_aliases.csv  # hand-built name map (the one hand-made input; see its note column)
-│   └── processed/              # everything rebuilt by run_all.py
+│   └── processed/              # everything rebuilt by run_all.py (also committed, because the dashboard reads it)
 ├── outputs/tables/, outputs/figures/
 ├── docs/                       # hand_checks.md, dashboard_mockup.png (AI-generated mockup, not a result)
 ├── dashboard/                  # Streamlit dashboard: app.py (entry point), ui_*.py, tests/test_app.py
@@ -239,21 +269,30 @@ https://theteamtoday-8gqhfahmohefpa7weqnw9k.streamlit.app/
   sample window has rolled off for them. The gaps look like holes in the vendor's data. We kept the
   2021-01-01 start for every firm and disclose the gaps instead. Yahoo's list is not a complete
   record of every broker call, and we cannot check what it leaves out; that is why the raw snapshot is committed.
-- **Residual survivorship.** Membership is as of 2021-01-01 (no hindsight), but 47 of the 505 members
-  could not be priced on Yahoo today (acquired or delisted, e.g. TWTR, ATVI, XLNX, FRC, SIVB), and one
-  more (VNT, spun off in late 2020) had fewer than 200 trading days in 2020, so they could not be ranked
-  (counts: `n_sp500_members_2020`, `n_members_no_yahoo_prices`, `n_members_short_2020_history` in
-  `sample_summary.csv`; list: `data/raw/universe_dropped.csv`). Twitter in particular may have had 2020
-  dollar volume near the top-50 cutoff. All 50 chosen firms still trade, so firms that died in 2021-2026 are missing.
+- **Survivors-only universe.** The firm list uses 2020 membership (the index on 2020-12-31) and 2020
+  dollar volume, but only firms that Yahoo can still price today could be ranked. That step uses
+  hindsight. 47 of the 505 members could not be priced on Yahoo today (delisted, acquired, or renamed
+  under an identifier not in today's index), among them Twitter (TWTR), Activision Blizzard (ATVI),
+  Electronic Arts (EA), Xilinx (XLNX), Walgreens Boots Alliance (WBA), First Republic Bank (FRC) and
+  SVB Financial (SIVB). One more (VNT, spun off in late 2020) had fewer than 200 trading days in 2020.
+  None of these could be ranked (counts: `n_sp500_members_2020`, `n_members_no_yahoo_prices`,
+  `n_members_short_2020_history` in `sample_summary.csv`; list: `data/raw/universe_dropped.csv`). We
+  have no 2020 volume for them, so we cannot say how many would have made the top 50; Twitter in
+  particular may have been near the cutoff. All 50 chosen firms still trade, so firms that died in
+  2021-2026 are missing, and the effect of that on the results is not measured.
 - **Ticker map.** Old symbols are mapped to today's through the SEC CIK in the current Wikipedia table.
   Two mappings look odd: EQR (Equity Residential) -> VMRK ("Vivmark Residential") and MMC (Marsh &
   McLennan) -> MRSH. Both keep the same CIK, and Yahoo returns a full 2020 price history under the new
   symbol (`data/raw/dollar_volume_2020.csv`), which fits a real rename rather than a mapping error, but
   we did not verify the renames elsewhere. Neither firm is in the top 50, so no result depends on them.
-- **Timestamp reliability and the move at t = -1.** Yahoo's times (read as UTC, converted to Eastern)
-  look like real publication times (about 79% before the open, `share_before_open` in
-  `sample_summary.csv`; none at midnight or on a round hour, `rating_time_of_day.csv`), but they are a
-  vendor's record, not verified release times. All numbers below are mean daily abnormal returns from
+- **Timestamp reliability and the move at t = -1.** Yahoo's times come without a time zone. Reading
+  them as UTC is our assumption. The only support is that the clock times then look like publication
+  times (about 79% before the open, `share_before_open` in `sample_summary.csv`; none at midnight or
+  on a round hour, `rating_time_of_day.csv`). That argument is circular (the zone was chosen because
+  the result looks right), and no timestamp was checked against a broker note or another vendor. If
+  the stamps are Eastern instead, day 0 moves for 156 of the 1,548 rating changes and the clean
+  CAR[-1,+1] is +1.75% / -1.34% instead of +1.74% / -1.29% (`robustness.csv`), so the headline does
+  not depend on the choice, but the day-by-day timing below does. All numbers below are mean daily abnormal returns from
   `outputs/tables/ar_by_day_timing.csv` (unit = episode). Over all episodes there is a move at t = -1
   (+0.52% for upgrades, -0.70% for downgrades) before the main jump at t = 0 (+1.80% / -1.74%).
   **That t = -1 move is mostly earnings, not late timestamps.** Near-earnings episodes have a large
@@ -289,8 +328,32 @@ https://theteamtoday-8gqhfahmohefpa7weqnw9k.streamlit.app/
 - **Leaderboard confidence intervals assume independent calls.** Each broker's 95% interval treats its
   calls as independent, but some calls on the same stock and day share one CAR with other brokers'
   calls, and calls on the same stock are correlated over time, so the intervals are somewhat too narrow.
-- **Clustered events.** Many episodes share a calendar day. Standard errors clustered by day 0 are only
-  slightly larger (`robustness.csv`); other dependence (same firm, same week) is not modelled.
+- **Clustered events.** Many episodes share a calendar day or a stock. For the clean headline,
+  clustering by day 0 lowers the t-statistics from 10.1 / -7.6 to 9.5 / -7.2, and two-way clustering
+  by stock and day 0 lowers them to 8.2 / -6.9 (`robustness.csv`). The plain t-statistics in the
+  results block are therefore too large, though the result stays far from zero. The broker
+  leaderboard intervals are not clustered, and the earnings regression clusters by stock only.
+- **The clean sample uses information from after day 0.** `other_call_in_window` looks one to two
+  trading days after day 0, `near_earnings` up to one day after, and `earnings_in_window` 20 days
+  after. The clean sample is an event-study control, not a filter an investor could apply on day 0. A
+  version that drops only on what is known by day 0 keeps more episodes and gives slightly larger
+  numbers (+1.81%, n = 617 / -1.35%, n = 459, `robustness.csv`). Earnings timing placeholders are
+  filled with each firm's usual timing over the whole sample; using earlier announcements only
+  changes no near-earnings flag (`n_near_earnings_flags_changed_past_only` in `sample_summary.csv`).
+- **The estimation window is not cleaned.** Days [-250,-30] contain earlier earnings days for every
+  episode and earlier rating changes of the same stock for 1,300 of 1,422 episodes
+  (`n_episodes_est_window_has_*` in `sample_summary.csv`); they feed alpha, beta and the residual
+  sd. Estimating the market model without those days gives +1.77% / -1.30% for the clean sample
+  (`robustness.csv`), so the headline does not depend on it.
+- **Current-vintage vendor data.** The sample is whatever Yahoo held on the pull date. Yahoo revises
+  its data and drops old rating rows, so a new pull gives different numbers, and we cannot see what
+  an investor would have seen at the time.
+- **During-market calls and the t = 0 return.** There are no intraday prices. For a call published
+  during market hours (about 20% of rating changes, `share_during_market`), the t = 0 daily return
+  includes the part of the day before the call.
+- **Downgrades may follow price falls.** In the clean sample CAR[-20,-2] for downgrades is -0.79%
+  (t = -1.6, `window_summary.csv`). It is not significant, but it is consistent with analysts
+  downgrading after the price has already fallen, which would mean the call partly follows the move.
 - **Small-n brokers and multiple comparisons.** Most brokers make few calls (median 6 per direction,
   `median_calls_per_broker_direction` in `sample_summary.csv`). Only brokers with >= 10 calls are
   ranked, means are shrunk toward the average, and the joint tests are the honest answer to "does the
