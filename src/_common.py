@@ -23,7 +23,7 @@ for d in [RAW, PROC, TABLES, FIGS, RATINGS_DIR, EARNINGS_DIR]:
 # --refresh on the command line (python run_all.py --refresh) re-downloads; otherwise use the cache
 REFRESH = '--refresh' in sys.argv
 
-# ---- universe: 50 large firms chosen with information available on 2021-01-01 ----
+# ---- universe: 50 large firms chosen from 2020 membership and 2020 volume (survivors only) ----
 UNIVERSE_ASOF = '2021-01-01'     # S&P 500 membership on this date
 RANK_YEAR = 2020                 # rank members by average daily dollar volume in this year
 N_FIRMS = 50

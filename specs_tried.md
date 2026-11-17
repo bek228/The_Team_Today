@@ -4,8 +4,12 @@ Every specification that was run on this project and looked at, including the HW
 Nothing run has been left off. CAR numbers are in percent; t-stats in parentheses. "Ep." = episode
 (one ticker x day 0); "call" = one rating change.
 
-**Count: 31 specifications** (7 in the HW8 prototype, 24 in the final pipeline), plus 5 diagnostics
-that only checked the data or explained a choice (D1-D5). Of the 24 final ones, 1 is the headline (F22, clean episodes; F1 was the headline before the instructor's audit);
+**Count: 40 entries** (7 in the HW8 prototype, 33 in the final pipeline: F1-F33), plus 9 diagnostics
+that only checked the data or explained a choice (D1-D9). F8 is the same run as F3, listed a second
+time because it is also a row of `robustness.csv`, so there are 32 distinct final specifications
+(39 distinct in total). F25-F33 and D6-D9 were added after the self-audit (`audits/04_self_audit_v1.md`,
+response in `audits/05_self_audit_response.md`); they are logged whether or not they "worked".
+Of the final ones, 1 is the headline (F22, clean episodes; F1 was the headline before the instructor's audit);
 the others are reported as windows, splits, robustness or broker analysis, and all of them are in
 `outputs/tables/`. The equality tests (F14, F17) are 18 p-values (3 tests x 2 directions x 3 samples),
 all reported.
@@ -27,7 +31,8 @@ AR (ret - SPY), during-market calls moved to the **next** trading day, raw broke
 
 ## Final pipeline (`run_all.py`)
 
-Common setup: 50 firms chosen without hindsight (S&P 500 on 2021-01-01, top 50 by 2020 dollar volume),
+Common setup: 50 firms from 2020 information among survivors (S&P 500 members on 2020-12-31, top 50 by
+2020 dollar volume, but only firms Yahoo can still price today could be ranked; see README),
 rating changes 2021-01-01 to 2026-10-09, market model vs SPY on [-250,-30], event window [-20,+20],
 day 0 = same trading day for before-open and during-market calls, next trading day for after-close,
 mean +- 1.96 SE. Near earnings = rating day 0 within [-1,+2] trading days of an earnings day 0.
@@ -38,10 +43,10 @@ mean +- 1.96 SE. Near earnings = rating day 0 within [-1,+2] trading days of an 
 | F2 | CAR[-20,-2] and CAR[+2,+20], episodes, all | pre +0.59 (1.6) / -0.42 (-1.0); drift +0.50 (1.6) / +0.36 (1.0) | no | window_summary |
 | F3 | F1-F2 on episodes NOT near earnings | [-1,+1] +1.89 (11.3), n 656 / -1.36 (-8.6), n 500 | no (cleanest estimate) | window_summary |
 | F4 | F1-F2 on episodes near earnings | [-1,+1] +4.77 (7.8), n 138 / -6.56 (-8.1), n 128 | no | window_summary |
-| F5 | mean CAR path t = -20..+20, for all / no_earnings / near_earnings | jump at t = 0, small move at t = -1, flat after | no | car_by_day, figures |
+| F5 | mean CAR path t = -20..+20, for all / no_earnings / near_earnings / clean (the clean path is the headline figure) | jump at t = 0, small move at t = -1, flat after | no | car_by_day, figures |
 | F6 | market-adjusted CAR[-1,+1] (ret - SPY) | +2.43 (13.4) / -2.51 (-10.8) | no | robustness |
 | F7 | day 0: during-market calls moved to the next day (prototype rule) | +2.38 (13.6), n 798 / -2.28 (-10.8), n 626 | no | robustness |
-| F8 | excluding near-earnings episodes (same numbers as F3) | +1.89 (11.3) / -1.36 (-8.6) | no | robustness |
+| F8 | excluding near-earnings episodes. This is the same run as F3, listed again because it is a row of robustness.csv; it is not a separate specification | +1.89 (11.3) / -1.36 (-8.6) | no | robustness |
 | F9 | excluding multi-broker days | +2.06 (12.3), n 761 / -1.96 (-10.2), n 598 | no | robustness |
 | F10 | unit = rating change instead of episode | +2.82 (14.2), n 852 / -3.58 (-12.0), n 696 | no | robustness |
 | F11 | F1 with SE clustered by day 0 (statsmodels OLS on a constant) | t = 12.9 / -10.0 | no | robustness |
@@ -58,25 +63,44 @@ mean +- 1.96 SE. Near earnings = rating day 0 within [-1,+2] trading days of an 
 | F22 | CAR[-1,+1] (and the long windows) on **clean** episodes: not near earnings ([-1,+2], wider than the instructor's +-1 session), no other call on the same stock within 2 trading days, not mixed | [-1,+1] +1.74 (10.1), n 582 / -1.29 (-7.6), n 419; pre +0.20 (0.5) / -0.79 (-1.6); drift +0.28 (0.7) / +0.29 (0.7) | **yes** | window_summary, car_by_day, robustness, car_upgrade_vs_downgrade.png |
 | F23 | CAR[-1,+1] by direction x earnings overlap (same split as F3/F4, as its own table) | no overlap +1.89 (11.3), n 656 / -1.36 (-8.6), n 500; overlap +4.77 (7.8), n 138 / -6.56 (-8.1), n 128 | no | earnings_comparison |
 | F24 | OLS of episode CAR[-1,+1] (%) on upgrade, near_earnings, upgrade x near_earnings and a constant, SE clustered by stock; and the same on signed CAR (minus CAR for downgrades) | raw: const -1.36, upgrade +3.25, near -5.20, interaction +8.08; signed: const 1.36, upgrade +0.53 (p 0.0535), near +5.20, interaction -2.32 (p 0.0178); n 1,422, 49 clusters | no | earnings_regression |
+| F25 | F22 [-1,+1] with SE clustered by day 0 (statsmodels OLS on a constant) | t = 9.5 / -7.2 (plain: 10.1 / -7.6) | no | robustness |
+| F26 | F22 [-1,+1] with SE clustered two-way by stock and day 0 | t = 8.2 / -6.9. Weaker than the plain t-stats, still far from zero | no | robustness |
+| F27 | Yahoo timestamps read as U.S. Eastern instead of UTC, all episodes | +2.40 (13.5), n 795 / -2.38 (-10.8), n 625 | no | robustness |
+| F28 | Yahoo timestamps read as U.S. Eastern instead of UTC, clean episodes | +1.75 (10.4), n 587 / -1.34 (-7.9), n 421 | no | robustness |
+| F29 | clean sample using only what is known by day 0: drop if an earnings day 0 is at t = -2..0 or another call on the stock is at t = -2..-1 (nothing after day 0 is used) | +1.81 (10.6), n 617 / -1.35 (-8.1), n 459 | no | robustness |
+| F30 | clean sample with earnings timing placeholders filled from earlier announcements only | identical to F22: +1.74 (10.1), n 582 / -1.29 (-7.6), n 419 (no flag changes, see D7) | no | robustness |
+| F31 | clean episodes with no other in-sample (2021 or later) rating change of the stock in the estimation window [-250,-30] | +1.74 (2.8), n 54 / -1.53 (-2.6), n 27. Few episodes, much noisier. Rating changes before 2021 are not in the data, so 2021 episodes pass this filter by construction: 58 of the 81 are from 2021 (sample_summary `n_clean_episodes_no_est_window_rating_change_from_2021`) | no | robustness |
+| F32 | clean episodes with no earnings day and no other rating change in the estimation window | n 0 / n 0: every episode has an earnings day in its estimation window, so this cannot be run (the empty row is kept) | no | robustness |
+| F33 | clean episodes, market model estimated after removing every day within [-1,+1] of an earnings day 0 or another rating-change day 0 of the stock from the estimation window | +1.77 (10.3), n 582 / -1.30 (-7.7), n 419. Only in-sample rating changes are removed: for 2021 episodes, rating changes in 2020 are not in the data and stay in the estimation window | no | robustness |
 
 Diagnostics (checked the data or explained a choice; not reported as results):
 
 | id | check | finding | where |
 |---|---|---|---|
-| D1 | clock-time distribution of Yahoo timestamps, read as UTC -> Eastern | peak 05:00-08:00 ET, none at midnight or on a round hour: real times. Decided the day-0 rule. | rating_time_of_day |
+| D1 | clock-time distribution of Yahoo timestamps, read as UTC -> Eastern (counted after de-duplication, so it adds up to the 1,548 rating changes) | peak 05:00-08:00 ET, none at midnight or on a round hour: they look like publication times. Decided the day-0 rule. This is the only evidence for UTC and it is circular; see F27-F28 for the Eastern alternative. | rating_time_of_day |
 | D2 | calls per broker x direction, and the SE of a broker mean at n = 10 (why MIN_BROKER_CALLS = 10) | median 6 calls; 62 of 177 broker-directions have >= 10 calls and make 72.0% of calls; SE at n = 10 is 2.38 pp | sample_summary |
 | D3 | Yahoo coverage per ticker and year (raw rows of any action, kept rating changes) | holes: META (one 2021 row, nothing 2024-10 to 2026-04), C (3 rows in 2021), GE (starts 2021-10-08), BRK-B (23 rows in total) | ratings_coverage_by_year |
 | D4 | across ranked brokers (all calls), correlation of \|mean CAR\| with the broker's share of near-earnings calls | 0.35 / 0.58: the `all` leaderboard partly rewards re-rating right after earnings, so no_earnings became the headline | sample_summary, broker_leaderboard (`share_near_earnings_pct`) |
 | D5 | the 10 largest abnormal returns at t = -1 among no-earnings episodes | e.g. +23.37 before SBUX_20240814_DeutscheBank, +23.12 before AMD_20251007_Jefferies: news can come before the call | largest_t_minus_1_moves_no_earnings |
+| D6 | rating changes whose day 0 moves if timestamps are read as Eastern | 156 of 1,548 | sample_summary (`n_rating_changes_day0_moves_if_eastern`) |
+| D7 | earnings timing placeholders, and near-earnings flags that change if placeholders use earlier announcements only | 12 placeholders; 0 timings change; 0 flags change (rating changes and episodes) | sample_summary (`n_earnings_timing_placeholders`, `n_earnings_timing_changed_past_only`, `n_near_earnings_flags_changed_past_only`) |
+| D8 | episodes whose estimation window contains an earnings day 0 or another in-sample (2021 or later) rating change of the same stock | earnings: 1,422 of 1,422 non-mixed episodes (1,001 of 1,001 clean); other rating change: 1,300 (920 clean), a lower bound because rating changes before 2021 are not in the data; of the 81 clean episodes without one, 58 are from 2021 | sample_summary (`n_episodes_est_window_has_*`, `n_clean_episodes_est_window_has_*`, `n_clean_episodes_no_est_window_rating_change*`) |
+| D9 | leaderboard calls that come from mixed upgrade/downgrade days or multi-broker days | 37 calls on mixed days in all; in the no_earnings leaderboard (1,201 calls) 16 on mixed days and 69 on multi-broker days | sample_summary (`n_calls_on_mixed_days*`, `n_calls_on_multi_broker_days_no_earnings_leaderboard`) |
 
 ## What was NOT tried (so nobody has to wonder)
 
-- **Broker threshold fixed in advance.** `MIN_BROKER_CALLS = 10` was set in `src/_common.py` before
-  the broker leaderboard was computed for the first time, and it was never changed: no other value was
-  run (the code has one value and no loop over thresholds). The pipeline code is not yet in git
-  history, so this order is the team's own record and cannot be shown from commits.
+- **Broker threshold.** The team's record is that `MIN_BROKER_CALLS = 10` was set in `src/_common.py`
+  before the broker leaderboard was computed for the first time. This cannot be verified from the
+  repo: the pipeline code and the first leaderboard output entered git history together, in commit
+  `02122c6` (2026-11-15), so commit order does not show which came first. What the repo does show is
+  that the value has not changed since that commit and that the code has one value and no loop over
+  thresholds. No other value was run.
 - No other earnings windows than [-1,+2] (and no +-1-session version of the clean sample), no other
-  "other call" window than 2 trading days, no other estimation or event windows than the HW6 defaults.
+  "other call" window than 2 trading days. The backward-looking version F29 is the one exception to
+  both (earnings day 0 at t = -2..0, other call at t = -2..-1). No other
+  estimation or event windows than the HW6 defaults (F33 removes days from the estimation window but
+  keeps [-250,-30]).
+- No check of Yahoo's timestamps against an outside source (broker notes, another vendor).
 - No factor models (Fama-French, industry) and no other benchmark than SPY.
 - No subsamples by year, sector, firm, size of the rating jump, or broker size.
 - The pipeline was run several times while being built (and once with `--refresh`); because the raw

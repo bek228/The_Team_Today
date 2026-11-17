@@ -7,6 +7,8 @@ Timing follows the HW6 worked example: a time during market hours is usually Yah
 so it is replaced by the firm's usual timing (raw label kept in timing_raw). Day 0 of each
 announcement is set in 04_build_event_panel.py with the same find_day0 rule as the rating changes,
 and announcements outside the price calendar are dropped there (no clamping to the first date).
+The usual timing uses the whole sample (so it uses later announcements too); timing_past_only is
+the same replacement made with the firm's EARLIER announcements only, for a robustness row.
 
 Output: data/raw/earnings/<TICKER>.csv (as downloaded), data/processed/earnings.csv
 """
@@ -61,8 +63,28 @@ print('timing replaced by the firm\'s usual timing:', int(fix.sum()), 'announcem
 n0 = len(ea)
 ea = ea.sort_values(['ticker', 'announce_time']).drop_duplicates(['ticker', 'announce_date'], keep='first')
 print('duplicate firm-days dropped:', n0 - len(ea))
+
+# ---- timing_past_only: the same replacement, using only announcements BEFORE this one ----
+# `timing` above uses the firm's most common timing over the whole sample, so a 2021 placeholder
+# is filled with information from 2026. Here a placeholder gets the most common timing of the
+# firm's EARLIER announcements only (rows are one per firm-day now, sorted by firm and time).
+# If the firm has no earlier non-placeholder announcement, the whole-sample value is kept.
+ea['timing_past_only'] = ea['timing']
+n_no_earlier = 0
+for i in ea.index[ea['timing_raw'] == 'during_market']:
+    earlier = ea[(ea['ticker'] == ea.loc[i, 'ticker']) & (ea['announce_time'] < ea.loc[i, 'announce_time'])
+                 & (ea['timing_raw'] != 'during_market')]
+    if len(earlier) > 0:
+        ea.loc[i, 'timing_past_only'] = earlier['timing_raw'].mode()[0]
+    else:
+        n_no_earlier += 1
+print('placeholders:', int((ea['timing_raw'] == 'during_market').sum()),
+      '| timing differs when only earlier announcements are used:',
+      int((ea['timing'] != ea['timing_past_only']).sum()),
+      '| no earlier announcement (whole-sample value kept):', n_no_earlier)
+
 ea = ea[['ticker', 'announce_time', 'announce_date', 'timing', 'timing_raw', 'eps_estimate',
-         'eps_reported', 'surprise_pct']].reset_index(drop=True)
+         'eps_reported', 'surprise_pct', 'timing_past_only']].reset_index(drop=True)
 
 # checks
 assert not ea.duplicated(['ticker', 'announce_date']).any()

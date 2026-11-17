@@ -39,6 +39,12 @@ n_unique = len(raw.drop_duplicates(['ticker', 'broker', 'day', 'Action']))
 assert n_unique == len(ev), (n_unique, len(ev))
 print(f'[1] rating changes recounted from raw files: {n_unique} = events.csv rows: OK')
 
+# ---- step 1: the time-of-day table describes the final sample (counted after de-duplication) ----
+tod = pd.read_csv(TABLES / 'rating_time_of_day.csv')
+n_ratings = len(ev) + len(pd.read_csv(PROC / 'dropped_events.csv'))   # = rows of ratings.csv
+assert tod['n'].sum() == n_ratings, (tod['n'].sum(), n_ratings)
+print(f'[1] rating_time_of_day.csv counts add up to {n_ratings} rating changes: OK')
+
 # ---- day 0: every event, by walking the calendar instead of searchsorted ----
 # (this one takes the pipeline's timing label as given; the next check starts from the raw stamp)
 def day0_by_hand(date, timing):
@@ -202,6 +208,38 @@ for d in ['upgrade', 'downgrade']:
     row = ws[(ws['sample'] == 'clean') & (ws['direction'] == d) & (ws['window'] == '[-1,+1]')].iloc[0]
     assert len(clean) == row['n'] and np.isclose(100 * clean['car_m1_p1'].mean(), row['mean_pct'], atol=1e-4)
     print(f'[5] clean {d}s CAR[-1,+1]: {100 * clean["car_m1_p1"].mean():.4f}% (n {len(clean)}): OK')
+
+# ---- step 5: day-0-clustered standard error of the clean upgrade mean, by hand ----
+# episodes on the same calendar day are one cluster: add up the residuals (CAR - mean) inside
+# each day, square the sums, add them up and divide by n^2. statsmodels then multiplies by
+# G / (G - 1) x (n - 1) / (n - k), with G = number of clusters and k = 1 (only a constant).
+rb = pd.read_csv(TABLES / 'robustness.csv')
+x = ep.loc[(ep['direction'] == 'upgrade') & ~ep['near_earnings'] & ~pd.Series(nearby, index=ep.index),
+           ['day0', 'car_m1_p1']]
+resid = x['car_m1_p1'] - x['car_m1_p1'].mean()
+day_sums = resid.groupby(x['day0']).sum()
+n, G, k = len(x), len(day_sums), 1
+var_hand = (day_sums ** 2).sum() / n ** 2 * G / (G - 1) * (n - 1) / (n - k)
+row = rb[(rb['spec'] == 'clean (headline), SE clustered by day0') & (rb['direction'] == 'upgrade')].iloc[0]
+assert n == row['n'] and np.isclose(100 * np.sqrt(var_hand), row['se_pct'], atol=1e-4)
+print(f'[5] clean upgrades, SE clustered by day 0 ({G} days for {n} episodes): '
+      f'{100 * np.sqrt(var_hand):.4f}%: OK')
+
+# ---- step 5: "another call 1-2 trading days BEFORE", and the backward-looking clean sample ----
+before = []
+for t, p in zip(ep['ticker'], ep['p0_hand']):
+    others = ep.loc[ep['ticker'] == t, 'p0_hand']
+    before.append(any(1 <= p - q <= 2 for q in others))   # q is 1 or 2 trading days earlier than p
+before = pd.Series(before, index=ep.index)
+assert (before == ep['other_call_before']).all()
+spec = 'clean, backward-looking filter: earnings day 0 at t = -2..0, other call at t = -2..-1'
+for d in ['upgrade', 'downgrade']:
+    # earnings day 0 on the rating's day 0, or one or two trading days before it
+    earnings_just_before = (ep['days_from_earnings'] >= 0) & (ep['days_from_earnings'] <= 2)
+    back = ep[(ep['direction'] == d) & ~earnings_just_before & ~before]
+    row = rb[(rb['spec'] == spec) & (rb['direction'] == d)].iloc[0]
+    assert len(back) == row['n'] and np.isclose(100 * back['car_m1_p1'].mean(), row['mean_pct'], atol=1e-4)
+    print(f'[5] backward-looking clean {d}s CAR[-1,+1]: {100 * back["car_m1_p1"].mean():.4f}% (n {len(back)}): OK')
 
 # ---- step 5: one leaderboard row (headline no_earnings sample) from events.csv ----
 lb = pd.read_csv(TABLES / 'broker_leaderboard.csv')
