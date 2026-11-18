@@ -7,6 +7,7 @@ import streamlit as st
 
 import ui_charts as C
 import ui_data as D
+import ui_takeaways as T
 
 WINDOW_NAMES = {"[-20,-2]": "Anticipation", "[-1,+1]": "Reaction", "[+2,+20]": "Drift"}
 ANOVA, KW = "one-way ANOVA F", "Kruskal-Wallis H"
@@ -83,6 +84,16 @@ def car_path_for(sample, cbd):
         "`car_by_day.csv` exactly for the samples the file does contain.")
 
 
+def robustness_row(rb, spec_start):
+    """The rows of robustness.csv whose spec starts with spec_start, indexed by direction."""
+    return rb[rb["spec"].str.startswith(spec_start)].set_index("direction")
+
+
+def two_way_t(rb):
+    """Clean headline t-stats with standard errors clustered by stock and day 0 (the strictest in the file)."""
+    return robustness_row(rb, "clean (headline), SE clustered two-way")["t_stat"]
+
+
 def window_table(ws, sample):
     s = ws[ws["sample"] == sample].copy()
     s["window"] = pd.Categorical(s["window"], list(WINDOW_NAMES), ordered=True)
@@ -106,6 +117,10 @@ def page_intro():
     up, dn = r.loc["upgrade"], r.loc["downgrade"]
     both_sig = abs(up["t_stat"]) > 1.96 and abs(dn["t_stat"]) > 1.96
     p_up, p_dn = equality_pvalues(eq, "no_earnings", "upgrade"), equality_pvalues(eq, "no_earnings", "downgrade")
+
+    t2 = two_way_t(D.table("robustness.csv"))
+    T.show("intro", up=D.pct(up["mean_pct"]), dn=D.pct(dn["mean_pct"]),
+           t_up=f"{t2['upgrade']:.1f}", t_dn=f"{t2['downgrade']:.1f}")
 
     col_chart, col_text = st.columns([3, 2], gap="large")
     with col_chart:
@@ -188,6 +203,7 @@ def page_method():
     st.title("Methodology")
     st.markdown("An **event study**: line up every rating change on its own day 0, then measure how the stock "
                 "did on the days around it after taking out what the market did.")
+    T.show("method", mkt=mkt, est0=est[0], est1=est[1])
 
     windows = [(f"CAR{w}", *window_bounds(w)) for w in ws["window"].unique() if window_bounds(w)]
     col_chart, col_text = st.columns([3, 2], gap="large")
@@ -226,6 +242,11 @@ def page_method():
             )
             st.caption("Timestamps are Yahoo's record and could not be checked against the brokers' own "
                        "release times. Source: `outputs/tables/rating_time_of_day.csv`.")
+            east = robustness_row(D.table("robustness.csv"), "timestamps read as Eastern (not UTC): clean")
+            T.show("method_timing", before=f"{100 * D.num(summ, 'share_before_open'):.0f}%",
+                   moves=D.num(summ, "n_rating_changes_day0_moves_if_eastern", int),
+                   n_calls=f"{D.num(summ, 'n_rating_changes', int):,}",
+                   up_e=D.pct(east.loc["upgrade", "mean_pct"]), dn_e=D.pct(east.loc["downgrade", "mean_pct"]))
 
     with tab_funnel:
         n_up_ep, n_dn_ep = D.num(summ, "n_episodes_upgrade", int), D.num(summ, "n_episodes_downgrade", int)
@@ -301,6 +322,7 @@ def page_method():
             f"- **Clean window.** Stricter: no earnings report anywhere in [{tmin},+{tmax}]; used only to read "
             "the long windows."
         )
+        T.show("method_samples", ew=ew, n_clean=int(clean_n.sum()), n_ep=n_up_ep + n_dn_ep)
 
     with st.expander("More detail on the method"):
         st.markdown(
@@ -379,6 +401,7 @@ def page_results():
     with c2:
         st.caption("Unit = one **episode** (one stock on one day 0). Market-model abnormal returns in percent. "
                    + desc.get(sample, ""))
+    results_takeaway(ws, sample)
 
     path, note = car_path_for(sample, cbd)
     tmax = int(path["t"].max())
@@ -426,6 +449,10 @@ def page_results():
     ew = summ.get("earnings_window_trading_days", "")
     st.caption(f"An episode overlaps earnings when the firm's earnings day 0 is within {ew} trading days of the "
                "rating change's day 0. These charts do not change with the sample selector.")
+    e = ec.set_index(["direction", "earnings"])["mean_pct"]
+    T.show("results_earnings", ew=ew,
+           up_near=D.pct(e[("upgrade", "earnings overlap")]), dn_near=D.pct(e[("downgrade", "earnings overlap")]),
+           up_no=D.pct(e[("upgrade", "no earnings overlap")]), dn_no=D.pct(e[("downgrade", "no earnings overlap")]))
     c1, c2 = st.columns(2, gap="large")
     with c1:
         st.markdown("##### Mean CAR[-1,+1] with and without earnings nearby")
@@ -472,6 +499,7 @@ def page_results():
     st.caption("Each row changes one choice (benchmark, day-0 rule, sample, unit, or how standard errors are "
                "computed). Dots are means, lines are 95% intervals (mean plus or minus 1.96 SE). "
                "Source: `outputs/tables/robustness.csv`.")
+    robustness_takeaway(rb)
     with st.expander("Robustness as a table"):
         st.dataframe(pd.DataFrame({
             "Specification": rb["spec"], "Direction": rb["direction"].str.capitalize(),
@@ -499,6 +527,38 @@ def earnings_regression_text(reg):
         f"earnings adds {b2['coef']:.2f} points for downgrades ({D.p_eq(b2['p_value'])}), and that boost is "
         f"{abs(b3['coef']):.2f} points {bigger} for upgrades ({D.p_eq(b3['p_value'])}). {amplify}"
     )
+
+
+def results_takeaway(ws, sample):
+    """Takeaway box at the top of Results; follows the sample selector."""
+    s = ws[ws["sample"] == sample].set_index(["window", "direction"])
+    react, post = s.loc["[-1,+1]"], s.loc["[+2,+20]"]
+    no_drift = (post["t_stat"].abs() < 1.96).all()
+    T.show("results", label=D.SAMPLE_LABELS.get(sample, sample),
+           up=D.pct(react.loc["upgrade", "mean_pct"]), t_up=f"{react.loc['upgrade', 't_stat']:.1f}",
+           n_up=int(react.loc["upgrade", "n"]),
+           dn=D.pct(react.loc["downgrade", "mean_pct"]), t_dn=f"{react.loc['downgrade', 't_stat']:.1f}",
+           n_dn=int(react.loc["downgrade", "n"]),
+           post_up=D.pct(post.loc["upgrade", "mean_pct"]), tp_up=f"{post.loc['upgrade', 't_stat']:.1f}",
+           post_dn=D.pct(post.loc["downgrade", "mean_pct"]), tp_dn=f"{post.loc['downgrade', 't_stat']:.1f}",
+           drift=T.DRIFT[bool(no_drift)], extra=T.SAMPLE_NOTE.get(sample, ""))
+
+
+def robustness_takeaway(rb):
+    """Takeaway box under the robustness chart: do the signs hold in every row with data?"""
+    rows = rb.dropna(subset=["mean_pct"])
+    right_sign = ((rows["direction"] == "upgrade") & (rows["mean_pct"] > 0)) | \
+                 ((rows["direction"] == "downgrade") & (rows["mean_pct"] < 0))
+    if right_sign.all():
+        sign_text = (f"In all {len(rows)} rows with data, upgrades stay above zero and downgrades below, and "
+                     f"the smallest |t| is {rows['t_stat'].abs().min():.1f}.")
+    else:
+        sign_text = (f"In {int((~right_sign).sum())} of {len(rows)} rows the average has the opposite sign to "
+                     "the call; read those rows with care.")
+    t2 = two_way_t(rb)
+    small = robustness_row(rb, "clean, no other rating change in the estimation window")
+    T.show("results_robust", sign_text=sign_text, t_up=f"{t2['upgrade']:.1f}", t_dn=f"{t2['downgrade']:.1f}",
+           n_small=int(small["n"].sum()))
 
 
 # ---------------------------------------------------------------- 4. Broker leaderboard
@@ -541,6 +601,10 @@ def page_brokers():
            "Even so, this is **not** a list of the best brokers: single brokers' averages are noisy and "
            "many intervals overlap.")
     )
+    meaning, caveat = T.BROKER_VERDICT[verdict]
+    T.show("brokers", direction=direction, label=D.SAMPLE_LABELS.get(sample, sample),
+           p_anova=D.p_eq(p["anova"]), p_perm=D.p_eq(p["perm"]), p_meaning=meaning, caveat=caveat,
+           median=D.num(summ, "median_calls_per_broker_direction", int))
 
     sub = lb[(lb["sample"] == sample) & (lb["direction"] == direction)]
     ranked = sub[sub["meets_min_n"]].sort_values("rank")
@@ -575,6 +639,7 @@ def page_brokers():
             )
             st.caption("Dots: each broker's average CAR[-1,+1] with a 95% confidence interval. "
                        "Source: `outputs/tables/broker_leaderboard.csv`.")
+        T.show("brokers_rank", min_calls=min_calls)
     with tab_noise:
         col_chart, col_text = st.columns([3, 2], gap="large")
         with col_chart:
@@ -672,6 +737,8 @@ def page_explore():
         "differ from the headline: calls on a day when several brokers moved the same stock share one CAR and "
         "count more than once, and the clean-sample rules are not applied (the earnings filter covers part of them)."
     )
+    per_call = 100 * ev.groupby("direction")["car_m1_p1"].mean()   # all rating changes, no filter
+    T.show("explore", up=D.pct(per_call["upgrade"]), dn=D.pct(per_call["downgrade"]), min_n=EXPLORE_MIN_N)
 
     with st.container(border=True):
         c1, c2 = st.columns(2)
