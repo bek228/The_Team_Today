@@ -19,6 +19,7 @@ from streamlit.testing.v1 import AppTest
 ROOT = Path(__file__).resolve().parents[2]
 APP = str(ROOT / "dashboard" / "app.py")
 TABLES = ROOT / "outputs" / "tables"
+DIRS = ["upgrade", "downgrade"]
 PAGES = ["Introduction", "Methodology", "Results", "Broker leaderboard", "Explore"]
 # minimum number of Plotly charts each page renders with its default settings
 MIN_CHARTS = {"Introduction": 2, "Methodology": 5, "Results": 7, "Broker leaderboard": 3, "Explore": 5}
@@ -263,6 +264,70 @@ def test_group_means_match_pipeline():
         assert abs((s["n"] * s["mean_pct"]).sum() / s["n"].sum()
                    - rb.loc[("unit = rating change (not episode)", d), "mean_pct"]) < 1e-3
     assert (ui_data.group_means(ev, "ticker", 10)["n"] >= 10).all()
+
+
+def takeaways(at):
+    """The text inside every 'Show takeaway' expander on the current page."""
+    import ui_takeaways
+    return ["\n".join(m.value for m in e.markdown) for e in at.expander if e.label == ui_takeaways.LABEL]
+
+
+def test_takeaways():
+    """Each page shows its takeaway boxes, and the numbers in them equal the tables (and follow the controls)."""
+    expected = {"Introduction": 1, "Methodology": 3, "Results": 3, "Broker leaderboard": 2, "Explore": 1}
+    ws = pd.read_csv(TABLES / "window_summary.csv")
+    rb = pd.read_csv(TABLES / "robustness.csv").set_index(["spec", "direction"])
+    ec = pd.read_csv(TABLES / "earnings_comparison.csv").set_index(["direction", "earnings"])
+    eq = pd.read_csv(TABLES / "broker_equality_test.csv")
+    summ = pd.read_csv(TABLES / "sample_summary.csv").set_index("metric")["value"]
+    two_way = "clean (headline), SE clustered two-way by stock and day0"
+    eastern = "timestamps read as Eastern (not UTC): clean"
+
+    def react(sample, d, col):
+        return ws[(ws["sample"] == sample) & (ws["window"] == "[-1,+1]") & (ws["direction"] == d)][col].iloc[0]
+
+    at = fresh()
+    for page in PAGES:
+        goto(at, page)
+        boxes = takeaways(at)
+        assert len(boxes) == expected[page], f"{page}: {len(boxes)} takeaway boxes, expected {expected[page]}"
+        for b in boxes:
+            assert b and "{" not in b, f"{page}: empty or unfilled takeaway: {b[:80]}"
+        text = "\n".join(boxes)
+        must = []
+        if page == "Introduction":
+            must = [f"{react('clean', d, 'mean_pct'):+.2f}%" for d in DIRS] + \
+                   [f"t = {rb.loc[(two_way, 'upgrade'), 't_stat']:.1f} and {rb.loc[(two_way, 'downgrade'), 't_stat']:.1f}"]
+        elif page == "Methodology":
+            must = [f"{rb.loc[(eastern, d), 'mean_pct']:+.2f}%" for d in DIRS] + \
+                   [f"for {int(float(summ['n_rating_changes_day0_moves_if_eastern']))} of"]
+        elif page == "Results":
+            must = [f"{react('clean', d, 'mean_pct'):+.2f}% (t = {react('clean', d, 't_stat'):.1f}, "
+                    f"{int(react('clean', d, 'n'))} episodes)" for d in DIRS]
+            must += [f"{ec.loc[(d, e), 'mean_pct']:+.2f}%" for d in DIRS
+                     for e in ["earnings overlap", "no earnings overlap"]]
+        elif page == "Broker leaderboard":
+            q = eq[(eq["sample"] == "no_earnings") & (eq["direction"] == "upgrade")].set_index("test")
+            must = [f"p = {q.loc['one-way ANOVA F', 'p_value']:.3f} (ANOVA)",
+                    f"median {int(float(summ['median_calls_per_broker_direction']))} per broker"]
+        elif page == "Explore":
+            unit = "unit = rating change (not episode)"
+            must = [f"{rb.loc[(unit, d), 'mean_pct']:+.2f}%" for d in DIRS]
+        for m in must:
+            assert m in text, f"{page}: takeaway does not show {m!r}"
+
+    # the boxes follow the page controls
+    at = goto(at, "Results")
+    at.selectbox(key="res_sample").set_value("near_earnings").run()
+    ok(at, "Results/near_earnings")
+    text = "\n".join(takeaways(at))
+    for d in DIRS:
+        assert f"{react('near_earnings', d, 'mean_pct'):+.2f}%" in text, f"Results takeaway ignores the sample ({d})"
+    at = goto(at, "Broker leaderboard")
+    at.radio(key="lb_dir").set_value("downgrade").run()
+    ok(at, "Leaderboard/downgrade")
+    q = eq[(eq["sample"] == "no_earnings") & (eq["direction"] == "downgrade")].set_index("test")
+    assert f"p = {q.loc['one-way ANOVA F', 'p_value']:.3f} (ANOVA)" in "\n".join(takeaways(at))
 
 
 def test_funnel_firm_step():
